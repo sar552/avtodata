@@ -1,0 +1,192 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-08-04 14:18:05.925060",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "market_document",
+  "brand",
+  "model",
+  "trim",
+  "sales_quantity",
+  "column_break_entry",
+  "region",
+  "city",
+  "source",
+  "source_reference",
+  "price",
+  "data_quality",
+  "sales_channel",
+  "comment"
+ ],
+ "fields": [
+  {
+   "default": "ME-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Naming Series",
+   "options": "ME-.#####"
+  },
+  {
+   "fieldname": "market_document",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Market Document",
+   "options": "Market Document",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "model.brand",
+   "fieldname": "brand",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Brand",
+   "options": "Vehicle Brand",
+   "read_only": 1
+  },
+  {
+   "fieldname": "model",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Model",
+   "options": "Model",
+   "reqd": 1
+  },
+  {
+   "fieldname": "trim",
+   "fieldtype": "Link",
+   "label": "Trim",
+   "options": "Trim"
+  },
+  {
+   "fieldname": "sales_quantity",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Sales Quantity",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_entry",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "city.region",
+   "fetch_if_empty": 1,
+   "fieldname": "region",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Region",
+   "options": "Region"
+  },
+  {
+   "fieldname": "city",
+   "fieldtype": "Link",
+   "label": "City",
+   "options": "City"
+  },
+  {
+   "fieldname": "source",
+   "fieldtype": "Link",
+   "label": "Source",
+   "options": "Data Source"
+  },
+  {
+   "fieldname": "source_reference",
+   "fieldtype": "Data",
+   "label": "Source Reference"
+  },
+  {
+   "fieldname": "price",
+   "fieldtype": "Currency",
+   "label": "Price"
+  },
+  {
+   "default": "unverified",
+   "fieldname": "data_quality",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Data Quality",
+   "options": "unverified\nverified"
+  },
+  {
+   "default": "market_total",
+   "fieldname": "sales_channel",
+   "fieldtype": "Select",
+   "label": "Sales Channel",
+   "options": "market_total"
+  },
+  {
+   "fieldname": "comment",
+   "fieldtype": "Small Text",
+   "label": "Comment"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-04 14:25:00.386700",
+ "modified_by": "Administrator",
+ "module": "AvtoData",
+ "name": "Market Entry",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "AvtoData Admin",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "AvtoData Dispatcher",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "AvtoData Reviewer",
+   "share": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

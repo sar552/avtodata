@@ -1,0 +1,71 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-08-04 14:12:02.363136",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "technical_spec_definition",
+  "numeric_value",
+  "text_value",
+  "value_status",
+  "source_reference",
+  "note"
+ ],
+ "fields": [
+  {
+   "fieldname": "technical_spec_definition",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Spec Definition",
+   "options": "Technical Spec Definition",
+   "reqd": 1
+  },
+  {
+   "fieldname": "numeric_value",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Numeric Value"
+  },
+  {
+   "fieldname": "text_value",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Text Value"
+  },
+  {
+   "default": "unverified",
+   "fieldname": "value_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Value Status",
+   "options": "unverified\nofficial\nestimated\ncalculated"
+  },
+  {
+   "fieldname": "source_reference",
+   "fieldtype": "Data",
+   "label": "Source Reference"
+  },
+  {
+   "fieldname": "note",
+   "fieldtype": "Small Text",
+   "label": "Note"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-08-04 14:12:02.363136",
+ "modified_by": "Administrator",
+ "module": "AvtoData",
+ "name": "Model Technical Spec Value",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

@@ -1,0 +1,9 @@
+# Copyright (c) 2026, AvtoData and contributors
+# For license information, please see license.txt
+
+# import frappe
+from frappe.model.document import Document
+
+
+class BrandMarketTier(Document):
+	pass
