@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"hdr_sales\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>\u041f\u0440\u043e\u0434\u0430\u0436\u0438</b></span>\",\"col\":12}},{\"id\":\"sc_md\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Market Document\",\"col\":3}},{\"id\":\"sc_me\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Market Entry\",\"col\":3}},{\"id\":\"sp1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr_cat\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>\u041a\u0430\u0442\u0430\u043b\u043e\u0433</b></span>\",\"col\":12}},{\"id\":\"sc_brand\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Vehicle Brand\",\"col\":3}},{\"id\":\"sc_model\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Model\",\"col\":3}},{\"id\":\"sc_trim\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Trim\",\"col\":3}},{\"id\":\"sc_spec\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Technical Spec Definition\",\"col\":3}},{\"id\":\"sp2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr_ref\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>\u0421\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0438</b></span>\",\"col\":12}},{\"id\":\"card_ref\",\"type\":\"card\",\"data\":{\"card_name\":\"\u0421\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0438\",\"col\":4}}]",
+ "content": "[{\"id\": \"hdr_sales\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Продажи</b></span>\", \"col\": 12}}, {\"id\": \"sc_md\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Document\", \"col\": 3}}, {\"id\": \"sc_me\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Entry\", \"col\": 3}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_cat\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Каталог</b></span>\", \"col\": 12}}, {\"id\": \"sc_brand\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Vehicle Brand\", \"col\": 3}}, {\"id\": \"sc_model\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Model\", \"col\": 3}}, {\"id\": \"sc_trim\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Trim\", \"col\": 3}}, {\"id\": \"sp2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_ref\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Справочники</b></span>\", \"col\": 12}}, {\"id\": \"card_ref\", \"type\": \"card\", \"data\": {\"card_name\": \"Справочники\", \"col\": 4}}]",
  "creation": "2026-08-09 16:48:44.034922",
  "custom_blocks": [],
  "docstatus": 0,
@@ -15,7 +15,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "\u0421\u043f\u0440\u0430\u0432\u043e\u0447\u043d\u0438\u043a\u0438",
+   "label": "Справочники",
    "link_count": 7,
    "link_type": "DocType",
    "onboard": 0,
@@ -92,7 +92,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-08-09 17:09:29.751057",
+ "modified": "2026-08-09 18:30:00.000000",
  "modified_by": "Administrator",
  "module": "AvtoData",
  "name": "AvtoData",
@@ -139,12 +139,6 @@
    "color": "Green",
    "label": "Trim",
    "link_to": "Trim",
-   "type": "DocType"
-  },
-  {
-   "color": "Orange",
-   "label": "Technical Spec Definition",
-   "link_to": "Technical Spec Definition",
    "type": "DocType"
   }
  ],

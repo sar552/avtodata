@@ -16,8 +16,7 @@
   "fuel_type",
   "market_tier_override",
   "image",
-  "is_active",
-  "technical_specs"
+  "is_active"
  ],
  "fields": [
   {
@@ -73,12 +72,6 @@
    "fieldtype": "Check",
    "in_standard_filter": 1,
    "label": "Is Active"
-  },
-  {
-   "fieldname": "technical_specs",
-   "fieldtype": "Table",
-   "label": "Technical Specs (Model level)",
-   "options": "Model Technical Spec Value"
   }
  ],
  "grid_page_length": 50,

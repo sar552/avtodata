@@ -12,8 +12,7 @@
   "trim_name",
   "model",
   "fuel_type",
-  "is_active",
-  "technical_specs"
+  "is_active"
  ],
  "fields": [
   {
@@ -45,12 +44,6 @@
    "fieldtype": "Check",
    "in_standard_filter": 1,
    "label": "Is Active"
-  },
-  {
-   "fieldname": "technical_specs",
-   "fieldtype": "Table",
-   "label": "Technical Specs (Trim level)",
-   "options": "Trim Technical Spec Value"
   }
  ],
  "grid_page_length": 50,

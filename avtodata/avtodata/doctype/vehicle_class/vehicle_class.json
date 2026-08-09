@@ -11,7 +11,6 @@
  "field_order": [
   "code",
   "vehicle_segment",
-  "display_order",
   "is_active"
  ],
  "fields": [
@@ -30,12 +29,6 @@
    "in_standard_filter": 1,
    "label": "Vehicle Segment",
    "options": "Vehicle Segment"
-  },
-  {
-   "default": "0",
-   "fieldname": "display_order",
-   "fieldtype": "Int",
-   "label": "Display Order"
   },
   {
    "default": "1",
