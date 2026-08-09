@@ -10,9 +10,7 @@
  "engine": "InnoDB",
  "field_order": [
   "code",
-  "name_ru",
   "vehicle_segment",
-  "name_uz",
   "display_order",
   "is_active"
  ],
@@ -26,24 +24,12 @@
    "unique": 1
   },
   {
-   "fieldname": "name_ru",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Name (RU)",
-   "reqd": 1
-  },
-  {
    "fieldname": "vehicle_segment",
    "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Vehicle Segment",
    "options": "Vehicle Segment"
-  },
-  {
-   "fieldname": "name_uz",
-   "fieldtype": "Data",
-   "label": "Name (UZ)"
   },
   {
    "default": "0",

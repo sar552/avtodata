@@ -10,8 +10,6 @@
  "engine": "InnoDB",
  "field_order": [
   "code",
-  "name_ru",
-  "name_uz",
   "display_order",
   "description",
   "source_url",
@@ -25,18 +23,6 @@
    "label": "Code",
    "reqd": 1,
    "unique": 1
-  },
-  {
-   "fieldname": "name_ru",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "label": "Name (RU)",
-   "reqd": 1
-  },
-  {
-   "fieldname": "name_uz",
-   "fieldtype": "Data",
-   "label": "Name (UZ)"
   },
   {
    "default": "0",
