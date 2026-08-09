@@ -9,7 +9,13 @@ fixtures = [
 	{"doctype": "Role", "filters": [["name", "in", [
 		"AvtoData Admin", "AvtoData Dispatcher", "AvtoData Reviewer", "AvtoData Viewer",
 	]]]},
-	{"doctype": "Custom DocPerm", "filters": [["parent", "in", ["User", "Role"]], ["role", "=", "AvtoData Admin"]]},
+	{
+		"doctype": "Custom DocPerm",
+		"filters": [
+			["parent", "in", ["User", "Role"]],
+			["role", "in", ["AvtoData Admin", "System Manager"]],
+		],
+	},
 ]
 
 # Apps
@@ -33,7 +39,7 @@ fixtures = [
 
 # include js, css files in header of desk.html
 # app_include_css = "/assets/avtodata/css/avtodata.css"
-# app_include_js = "/assets/avtodata/js/avtodata.js"
+app_include_js = "/assets/avtodata/js/avtodata.js"
 
 # include js, css files in header of web template
 # web_include_css = "/assets/avtodata/css/avtodata.css"

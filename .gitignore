@@ -1,0 +1,17 @@
+.DS_Store
+*.pyc
+*.egg-info
+*.swp
+tags
+node_modules
+__pycache__/
+.vscode/
+.idea/
+dist/
+build/
+avtodata/public/dist/
+avtodata/public/node_modules/
+*.log
+.coverage
+htmlcov/
+.ruff_cache/

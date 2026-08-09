@@ -1,0 +1,141 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"hdr_sales\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Продажи</b></span>\",\"col\":12}},{\"id\":\"sc_md\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Market Document\",\"col\":3}},{\"id\":\"sc_me\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Market Entry\",\"col\":3}},{\"id\":\"sp1\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr_cat\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Каталог</b></span>\",\"col\":12}},{\"id\":\"sc_brand\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Vehicle Brand\",\"col\":3}},{\"id\":\"sc_model\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Model\",\"col\":3}},{\"id\":\"sc_trim\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Trim\",\"col\":3}},{\"id\":\"sc_spec\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Technical Spec Definition\",\"col\":3}},{\"id\":\"sp2\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"hdr_ref\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Справочники</b></span>\",\"col\":12}},{\"id\":\"card_ref\",\"type\":\"card\",\"data\":{\"card_name\":\"Справочники\",\"col\":4}}]",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "sell",
+ "is_hidden": 0,
+ "label": "AvtoData",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Справочники",
+   "link_count": 7,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Region",
+   "link_count": 0,
+   "link_to": "Region",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "City",
+   "link_count": 0,
+   "link_to": "City",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Data Source",
+   "link_count": 0,
+   "link_to": "Data Source",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle Segment",
+   "link_count": 0,
+   "link_to": "Vehicle Segment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle Class",
+   "link_count": 0,
+   "link_to": "Vehicle Class",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fuel Type",
+   "link_count": 0,
+   "link_to": "Fuel Type",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Brand Market Tier",
+   "link_count": 0,
+   "link_to": "Brand Market Tier",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-08-09 00:00:00.000000",
+ "module": "AvtoData",
+ "name": "AvtoData",
+ "number_cards": [],
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [],
+ "sequence_id": 99.0,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "label": "Market Document",
+   "link_to": "Market Document",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "label": "Market Entry",
+   "link_to": "Market Entry",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "label": "Vehicle Brand",
+   "link_to": "Vehicle Brand",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "label": "Model",
+   "link_to": "Model",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "label": "Trim",
+   "link_to": "Trim",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "label": "Technical Spec Definition",
+   "link_to": "Technical Spec Definition",
+   "type": "DocType"
+  }
+ ],
+ "title": "AvtoData"
+}
