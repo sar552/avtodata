@@ -37,9 +37,8 @@
   },
   {
    "fieldname": "vehicle_class",
-   "fieldtype": "Link",
-   "label": "Vehicle Class",
-   "options": "Vehicle Class"
+   "fieldtype": "Select",
+   "label": "Vehicle Class"
   },
   {
    "fieldname": "vehicle_segment",

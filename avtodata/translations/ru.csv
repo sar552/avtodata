@@ -1,0 +1,58 @@
+Market Document,Документ продаж
+Market Documents,Документы продаж
+Market Entry,Строка продаж
+Market Entries,Строки продаж
+Vehicle Brand,Бренд
+Vehicle Brands,Бренды
+Brand Name,Название бренда
+Model,Модель
+Models,Модели
+Model Name,Название модели
+Trim,Комплектация
+Trims,Комплектации
+Trim Name,Название комплектации
+Vehicle Segment,Сегмент
+Vehicle Segments,Сегменты
+Vehicle Class,Класс автомобиля
+Classes,Классы
+Fuel Type,Тип агрегата
+Fuel Types,Типы агрегата
+Region,Регион
+Regions,Регионы
+City,Город
+Cities,Города
+Data Source,Источник данных
+Data Sources,Источники данных
+Brand Market Tier,Позиционирование бренда
+Market Tier,Позиционирование
+Market Tier Override,Позиционирование модели
+Period Month,Отчётный период
+Document Number,Номер документа
+Sales Quantity,Количество продаж
+Source Reference,Ссылка на источник
+Data Quality,Статус проверки
+Sales Channel,Канал продаж
+Comment,Комментарий
+Code,Код
+Logo,Логотип
+Source URL,URL источника
+Model Dashboard,Дашборд моделей
+Publish,Опубликовать
+Reopen,Вернуть в черновик
+Copy Document,Копировать документ
+Delete Document,Удалить документ
+New Period,Новый период
+Actions,Действия
+Search model...,Поиск модели...
+No vehicles found,Модели не найдены
+A document for this period already exists.,Документ за этот период уже существует.
+This document is not editable outside of Draft status.,Документ можно редактировать только в статусе «Черновик».
+"Brand, model and a sales quantity greater than zero are required.","Укажите бренд, модель и количество продаж больше нуля."
+The selected model does not belong to the selected brand.,Выбранная модель не относится к выбранному бренду.
+Cannot publish a document with no entries.,Нельзя опубликовать документ без строк.
+Document not found or not in Draft status.,Документ не найден или не в статусе «Черновик».
+Entries can only be modified while the document is in Draft status.,Строки можно изменять только пока документ в статусе «Черновик».
+Sales quantity must be greater than zero.,Количество продаж должно быть больше нуля.
+You are not permitted to perform this action.,У вас нет прав для выполнения этой операции.
+Return this document to Draft for editing?,Вернуть документ в черновик для редактирования?
+Remove this document? It will be excluded from reports.,Удалить документ? Он будет исключён из отчётов.
