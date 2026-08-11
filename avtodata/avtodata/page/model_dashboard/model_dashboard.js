@@ -20,6 +20,7 @@ class ModelDashboard {
 		this.trims_by_model = {};
 		this.loaded = false;
 		this.active_brand = null;
+		this.active_tier = null;
 
 		this.$main.html(`
 			<style>
@@ -49,6 +50,39 @@ class ModelDashboard {
 				.md-back:hover {
 					color: var(--text-color);
 					box-shadow: var(--shadow-sm);
+				}
+				.md-chips {
+					display: flex;
+					gap: 8px;
+					flex: 1;
+					min-width: 0;
+					overflow-x: auto;
+					padding-bottom: 4px;
+					scrollbar-width: thin;
+				}
+				.md-chip {
+					border: 1px solid var(--border-color);
+					border-radius: 999px;
+					padding: 4px 14px;
+					cursor: pointer;
+					font-size: var(--text-sm);
+					background: var(--card-bg);
+					flex: 0 0 auto;
+					white-space: nowrap;
+				}
+				.md-chip.active {
+					background: var(--primary);
+					color: #fff;
+					border-color: var(--primary);
+				}
+				.md-tier-badge {
+					display: inline-block;
+					margin-top: 6px;
+					padding: 2px 10px;
+					border-radius: 999px;
+					border: 1px solid var(--border-color);
+					font-size: var(--text-sm);
+					color: var(--text-muted);
 				}
 				.md-crumb-brand {
 					font-size: var(--text-lg);
@@ -157,7 +191,7 @@ class ModelDashboard {
 				method: "frappe.client.get_list",
 				args: {
 					doctype: "Vehicle Brand",
-					fields: ["name", "brand_name", "country", "logo"],
+					fields: ["name", "brand_name", "country", "logo", "market_tier"],
 					filters: { is_active: 1 },
 					order_by: "brand_name asc",
 					limit_page_length: 0,
@@ -220,20 +254,40 @@ class ModelDashboard {
 		return this.vehicles.filter((v) => v.brand === brand).length;
 	}
 
+	tier_label(code) {
+		if (!code) return "";
+		return code
+			.split("_")
+			.map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+			.join(" ");
+	}
+
 	render_brands() {
 		const esc = frappe.utils.escape_html;
+		const tiers = [...new Set(this.brands.map((b) => b.market_tier).filter(Boolean))].sort();
 		this.$body.html(`
 			<div class="md-toolbar">
 				<input type="search" class="form-control md-search" placeholder="${__("Search brand...")}">
+				<div class="md-chips">
+					${tiers
+						.map(
+							(t) =>
+								`<span class="md-chip ${t === this.active_tier ? "active" : ""}" data-tier="${esc(t)}">${esc(this.tier_label(t))}</span>`
+						)
+						.join("")}
+				</div>
 			</div>
 			<div class="md-brand-grid"></div>
 		`);
 
 		const draw = () => {
 			const query = (this.$body.find(".md-search").val() || "").toLowerCase();
-			const rows = this.brands.filter(
-				(b) => !query || `${b.brand_name} ${b.country || ""}`.toLowerCase().includes(query)
-			);
+			const rows = this.brands.filter((b) => {
+				if (this.active_tier && b.market_tier !== this.active_tier) return false;
+				return (
+					!query || `${b.brand_name} ${b.country || ""}`.toLowerCase().includes(query)
+				);
+			});
 			if (!rows.length) {
 				this.$body
 					.find(".md-brand-grid")
@@ -247,12 +301,16 @@ class ModelDashboard {
 							? `<img src="${esc(b.logo)}" loading="lazy">`
 							: esc((b.brand_name || "?")[0]);
 						const count = this.model_count(b.name);
+						const tier_line = b.market_tier
+							? `<div><span class="md-tier-badge">${esc(this.tier_label(b.market_tier))}</span></div>`
+							: "";
 						return `
 							<div class="md-card md-brand-card" data-brand="${esc(b.name)}">
 								<div class="md-brand-logo">${logo}</div>
 								<div class="md-brand-info">
 									<div class="md-brand-name">${esc(b.brand_name || b.name)}</div>
 									<div class="md-meta">${esc(b.country || "")}</div>
+									${tier_line}
 									<span class="md-count-badge">${count} ${__("models")}</span>
 								</div>
 							</div>
@@ -262,7 +320,15 @@ class ModelDashboard {
 			);
 		};
 
+		const me = this;
 		this.$body.on("input", ".md-search", draw);
+		this.$body.on("click", ".md-chip", function () {
+			const tier = $(this).data("tier");
+			me.active_tier = me.active_tier === tier ? null : tier;
+			me.$body.find(".md-chip").removeClass("active");
+			if (me.active_tier) $(this).addClass("active");
+			draw();
+		});
 		this.$body.on("click", ".md-brand-card", function () {
 			frappe.set_route("model-dashboard", $(this).data("brand"));
 		});
