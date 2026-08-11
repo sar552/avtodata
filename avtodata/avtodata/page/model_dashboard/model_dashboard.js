@@ -4,210 +4,333 @@ frappe.pages["model-dashboard"].on_page_load = function (wrapper) {
 		title: __("Model Dashboard"),
 		single_column: true,
 	});
-
-	const $main = $(wrapper).find(".layout-main-section");
-	$main.html(`
-		<style>
-			.vg-toolbar {
-				display: flex;
-				gap: 8px;
-				align-items: center;
-				padding: 0 0 15px;
-			}
-			.vg-search {
-				max-width: 260px;
-				flex: 0 0 auto;
-			}
-			.vg-brands {
-				display: flex;
-				gap: 8px;
-				flex: 1;
-				min-width: 0;
-				overflow-x: auto;
-				padding-bottom: 4px;
-				scrollbar-width: thin;
-			}
-			.vg-brand-chip {
-				border: 1px solid var(--border-color);
-				border-radius: 999px;
-				padding: 4px 14px;
-				cursor: pointer;
-				font-size: var(--text-sm);
-				background: var(--card-bg);
-				flex: 0 0 auto;
-				white-space: nowrap;
-			}
-			.vg-brand-chip.active {
-				background: var(--primary);
-				color: #fff;
-				border-color: var(--primary);
-			}
-			.vg-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-				gap: 16px;
-			}
-			.vg-card {
-				background: var(--card-bg);
-				border: 1px solid var(--border-color);
-				border-radius: var(--border-radius-lg);
-				overflow: hidden;
-				cursor: pointer;
-				transition: transform 0.15s, box-shadow 0.15s;
-			}
-			.vg-card:hover {
-				transform: translateY(-3px);
-				box-shadow: var(--shadow-md);
-			}
-			.vg-image {
-				height: 160px;
-				background: var(--bg-color);
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				font-size: 48px;
-			}
-			.vg-image img {
-				width: 100%;
-				height: 100%;
-				object-fit: contain;
-			}
-			.vg-info {
-				padding: 12px 15px;
-			}
-			.vg-model {
-				font-size: var(--text-lg);
-				font-weight: 600;
-				margin-bottom: 6px;
-			}
-			.vg-meta {
-				color: var(--text-muted);
-				font-size: var(--text-sm);
-				margin-top: 2px;
-			}
-			.vg-empty {
-				padding: 40px;
-				text-align: center;
-				color: var(--text-muted);
-			}
-		</style>
-		<div class="vg-toolbar">
-			<input type="search" class="form-control vg-search" placeholder="${__("Search model...")}">
-			<div class="vg-brands"></div>
-		</div>
-		<div class="vg-grid"></div>
-	`);
-
-	let vehicles = [];
-	let trims_by_model = {};
-	let active_brand = null;
-
-	const render = () => {
-		const query = ($main.find(".vg-search").val() || "").toLowerCase();
-		const rows = vehicles.filter((v) => {
-			if (active_brand && v.brand !== active_brand) return false;
-			const haystack = `${v.model_name} ${v.brand} ${(trims_by_model[v.name] || []).join(" ")}`;
-			if (query && !haystack.toLowerCase().includes(query)) return false;
-			return true;
-		});
-
-		if (!rows.length) {
-			$main.find(".vg-grid").html(`<div class="vg-empty">${__("No vehicles found")}</div>`);
-			return;
-		}
-
-		$main.find(".vg-grid").html(
-			rows
-				.map((v) => {
-					const image = v.image
-						? `<img src="${frappe.utils.escape_html(v.image)}">`
-						: "🚗";
-					const meta = [v.vehicle_segment, v.vehicle_class, v.fuel_type]
-						.filter(Boolean)
-						.map(frappe.utils.escape_html)
-						.join(" · ");
-					const trims = trims_by_model[v.name] || [];
-					const trims_line = trims.length
-						? `<div class="vg-meta vg-trims">${__("Trims")}: ${trims
-								.map(frappe.utils.escape_html)
-								.join(", ")}</div>`
-						: "";
-					return `
-						<div class="vg-card" data-name="${frappe.utils.escape_html(v.name)}">
-							<div class="vg-image">${image}</div>
-							<div class="vg-info">
-								<div class="vg-model">${frappe.utils.escape_html(v.model_name || v.name)}</div>
-								<div class="vg-meta">${frappe.utils.escape_html(v.brand || "")}</div>
-								<div class="vg-meta">${meta}</div>
-								${trims_line}
-							</div>
-						</div>
-					`;
-				})
-				.join("")
-		);
-	};
-
-	const render_brand_chips = () => {
-		const brands = [...new Set(vehicles.map((v) => v.brand).filter(Boolean))].sort();
-		$main.find(".vg-brands").html(
-			brands
-				.map(
-					(b) =>
-						`<span class="vg-brand-chip" data-brand="${frappe.utils.escape_html(b)}">${frappe.utils.escape_html(b)}</span>`
-				)
-				.join("")
-		);
-	};
-
-	$main.on("input", ".vg-search", render);
-	$main.on("click", ".vg-brand-chip", function () {
-		const brand = $(this).data("brand");
-		active_brand = active_brand === brand ? null : brand;
-		$main.find(".vg-brand-chip").removeClass("active");
-		if (active_brand) $(this).addClass("active");
-		render();
-	});
-	$main.on("click", ".vg-card", function () {
-		frappe.set_route("Form", "Model", $(this).data("name"));
-	});
-
-	Promise.all([
-		frappe.call({
-			method: "frappe.client.get_list",
-			args: {
-				doctype: "Model",
-				fields: [
-					"name",
-					"model_name",
-					"brand",
-					"vehicle_segment",
-					"vehicle_class",
-					"fuel_type",
-					"image",
-				],
-				filters: { is_active: 1 },
-				order_by: "brand asc, model_name asc",
-				limit_page_length: 0,
-			},
-		}),
-		frappe.call({
-			method: "frappe.client.get_list",
-			args: {
-				doctype: "Trim",
-				fields: ["trim_name", "model"],
-				filters: { is_active: 1 },
-				order_by: "trim_name asc",
-				limit_page_length: 0,
-			},
-		}),
-	]).then(([models_r, trims_r]) => {
-		vehicles = models_r.message || [];
-		trims_by_model = {};
-		for (const t of trims_r.message || []) {
-			(trims_by_model[t.model] = trims_by_model[t.model] || []).push(t.trim_name);
-		}
-		render_brand_chips();
-		render();
-	});
+	wrapper.model_dashboard = new ModelDashboard(wrapper, page);
 };
+
+frappe.pages["model-dashboard"].on_page_show = function (wrapper) {
+	wrapper.model_dashboard && wrapper.model_dashboard.handle_route();
+};
+
+class ModelDashboard {
+	constructor(wrapper, page) {
+		this.page = page;
+		this.$main = $(wrapper).find(".layout-main-section");
+		this.brands = [];
+		this.vehicles = [];
+		this.trims_by_model = {};
+		this.loaded = false;
+		this.active_brand = null;
+
+		this.$main.html(`
+			<style>
+				.md-toolbar {
+					display: flex;
+					gap: 10px;
+					align-items: center;
+					padding: 0 0 15px;
+					flex-wrap: wrap;
+				}
+				.md-search {
+					max-width: 280px;
+				}
+				.md-back {
+					display: inline-flex;
+					align-items: center;
+					gap: 5px;
+					cursor: pointer;
+					color: var(--text-muted);
+					font-size: var(--text-sm);
+					border: 1px solid var(--border-color);
+					border-radius: 999px;
+					padding: 4px 14px;
+					background: var(--card-bg);
+					white-space: nowrap;
+				}
+				.md-back:hover {
+					color: var(--text-color);
+					box-shadow: var(--shadow-sm);
+				}
+				.md-crumb-brand {
+					font-size: var(--text-lg);
+					font-weight: 600;
+				}
+				.md-crumb-count {
+					color: var(--text-muted);
+					font-size: var(--text-sm);
+				}
+				.md-grid {
+					display: grid;
+					grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+					gap: 16px;
+				}
+				.md-brand-grid {
+					display: grid;
+					grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+					gap: 16px;
+				}
+				.md-card {
+					background: var(--card-bg);
+					border: 1px solid var(--border-color);
+					border-radius: var(--border-radius-lg);
+					overflow: hidden;
+					cursor: pointer;
+					transition: transform 0.15s, box-shadow 0.15s;
+				}
+				.md-card:hover {
+					transform: translateY(-3px);
+					box-shadow: var(--shadow-md);
+				}
+				.md-brand-logo {
+					height: 110px;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					background: var(--bg-color);
+					font-size: 40px;
+					font-weight: 700;
+					color: var(--text-muted);
+				}
+				.md-brand-logo img {
+					max-width: 70%;
+					max-height: 80%;
+					object-fit: contain;
+				}
+				.md-brand-info {
+					padding: 12px 15px;
+					text-align: center;
+				}
+				.md-brand-name {
+					font-size: var(--text-lg);
+					font-weight: 600;
+				}
+				.md-meta {
+					color: var(--text-muted);
+					font-size: var(--text-sm);
+					margin-top: 3px;
+				}
+				.md-count-badge {
+					display: inline-block;
+					margin-top: 8px;
+					padding: 2px 10px;
+					border-radius: 999px;
+					background: var(--bg-color);
+					font-size: var(--text-sm);
+					color: var(--text-color);
+				}
+				.md-image {
+					height: 160px;
+					background: var(--bg-color);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-size: 48px;
+				}
+				.md-image img {
+					width: 100%;
+					height: 100%;
+					object-fit: contain;
+				}
+				.md-info {
+					padding: 12px 15px;
+				}
+				.md-model {
+					font-size: var(--text-lg);
+					font-weight: 600;
+					margin-bottom: 6px;
+				}
+				.md-empty {
+					padding: 40px;
+					text-align: center;
+					color: var(--text-muted);
+				}
+			</style>
+			<div class="md-body"><div class="md-empty">${__("Loading")}...</div></div>
+		`);
+		this.$body = this.$main.find(".md-body");
+
+		this.load();
+	}
+
+	load() {
+		Promise.all([
+			frappe.call({
+				method: "frappe.client.get_list",
+				args: {
+					doctype: "Vehicle Brand",
+					fields: ["name", "brand_name", "country", "logo"],
+					filters: { is_active: 1 },
+					order_by: "brand_name asc",
+					limit_page_length: 0,
+				},
+			}),
+			frappe.call({
+				method: "frappe.client.get_list",
+				args: {
+					doctype: "Model",
+					fields: [
+						"name",
+						"model_name",
+						"brand",
+						"vehicle_segment",
+						"vehicle_class",
+						"fuel_type",
+						"image",
+					],
+					filters: { is_active: 1 },
+					order_by: "model_name asc",
+					limit_page_length: 0,
+				},
+			}),
+			frappe.call({
+				method: "frappe.client.get_list",
+				args: {
+					doctype: "Trim",
+					fields: ["trim_name", "model"],
+					filters: { is_active: 1 },
+					order_by: "trim_name asc",
+					limit_page_length: 0,
+				},
+			}),
+		]).then(([brands_r, models_r, trims_r]) => {
+			this.brands = brands_r.message || [];
+			this.vehicles = models_r.message || [];
+			this.trims_by_model = {};
+			for (const t of trims_r.message || []) {
+				(this.trims_by_model[t.model] = this.trims_by_model[t.model] || []).push(
+					t.trim_name
+				);
+			}
+			this.loaded = true;
+			this.handle_route();
+		});
+	}
+
+	handle_route() {
+		if (!this.loaded) return;
+		const route = frappe.get_route();
+		this.active_brand = route[1] || null;
+		if (this.active_brand) {
+			this.render_models();
+		} else {
+			this.render_brands();
+		}
+	}
+
+	model_count(brand) {
+		return this.vehicles.filter((v) => v.brand === brand).length;
+	}
+
+	render_brands() {
+		const esc = frappe.utils.escape_html;
+		this.$body.html(`
+			<div class="md-toolbar">
+				<input type="search" class="form-control md-search" placeholder="${__("Search brand...")}">
+			</div>
+			<div class="md-brand-grid"></div>
+		`);
+
+		const draw = () => {
+			const query = (this.$body.find(".md-search").val() || "").toLowerCase();
+			const rows = this.brands.filter(
+				(b) => !query || `${b.brand_name} ${b.country || ""}`.toLowerCase().includes(query)
+			);
+			if (!rows.length) {
+				this.$body
+					.find(".md-brand-grid")
+					.html(`<div class="md-empty">${__("No brands found")}</div>`);
+				return;
+			}
+			this.$body.find(".md-brand-grid").html(
+				rows
+					.map((b) => {
+						const logo = b.logo
+							? `<img src="${esc(b.logo)}" loading="lazy">`
+							: esc((b.brand_name || "?")[0]);
+						const count = this.model_count(b.name);
+						return `
+							<div class="md-card md-brand-card" data-brand="${esc(b.name)}">
+								<div class="md-brand-logo">${logo}</div>
+								<div class="md-brand-info">
+									<div class="md-brand-name">${esc(b.brand_name || b.name)}</div>
+									<div class="md-meta">${esc(b.country || "")}</div>
+									<span class="md-count-badge">${count} ${__("models")}</span>
+								</div>
+							</div>
+						`;
+					})
+					.join("")
+			);
+		};
+
+		this.$body.on("input", ".md-search", draw);
+		this.$body.on("click", ".md-brand-card", function () {
+			frappe.set_route("model-dashboard", $(this).data("brand"));
+		});
+		draw();
+	}
+
+	render_models() {
+		const esc = frappe.utils.escape_html;
+		const brand = this.brands.find((b) => b.name === this.active_brand);
+		const brand_label = brand ? brand.brand_name || brand.name : this.active_brand;
+		const count = this.model_count(this.active_brand);
+
+		this.$body.html(`
+			<div class="md-toolbar">
+				<span class="md-back">← ${__("Brands")}</span>
+				<span class="md-crumb-brand">${esc(brand_label)}</span>
+				<span class="md-crumb-count">${count} ${__("models")}</span>
+				<input type="search" class="form-control md-search" placeholder="${__("Search model...")}">
+			</div>
+			<div class="md-grid"></div>
+		`);
+
+		const draw = () => {
+			const query = (this.$body.find(".md-search").val() || "").toLowerCase();
+			const rows = this.vehicles.filter((v) => {
+				if (v.brand !== this.active_brand) return false;
+				const trims = this.trims_by_model[v.name] || [];
+				const haystack = `${v.model_name} ${trims.join(" ")}`;
+				return !query || haystack.toLowerCase().includes(query);
+			});
+			if (!rows.length) {
+				this.$body
+					.find(".md-grid")
+					.html(`<div class="md-empty">${__("No vehicles found")}</div>`);
+				return;
+			}
+			this.$body.find(".md-grid").html(
+				rows
+					.map((v) => {
+						const image = v.image ? `<img src="${esc(v.image)}" loading="lazy">` : "🚗";
+						const meta = [v.vehicle_segment, v.vehicle_class, v.fuel_type]
+							.filter(Boolean)
+							.map(esc)
+							.join(" · ");
+						const trims = this.trims_by_model[v.name] || [];
+						const trims_line = trims.length
+							? `<div class="md-meta">${__("Trims")}: ${trims.map(esc).join(", ")}</div>`
+							: "";
+						return `
+							<div class="md-card md-model-card" data-name="${esc(v.name)}">
+								<div class="md-image">${image}</div>
+								<div class="md-info">
+									<div class="md-model">${esc(v.model_name || v.name)}</div>
+									<div class="md-meta">${meta}</div>
+									${trims_line}
+								</div>
+							</div>
+						`;
+					})
+					.join("")
+			);
+		};
+
+		this.$body.on("input", ".md-search", draw);
+		this.$body.on("click", ".md-back", () => frappe.set_route("model-dashboard"));
+		this.$body.on("click", ".md-model-card", function () {
+			frappe.set_route("Form", "Model", $(this).data("name"));
+		});
+		draw();
+	}
+}

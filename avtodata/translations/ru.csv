@@ -45,6 +45,10 @@ New Period,Новый период
 Actions,Действия
 Search model...,Поиск модели...
 No vehicles found,Модели не найдены
+Brands,Бренды
+Search brand...,Поиск бренда или страны...
+No brands found,Бренды не найдены
+models,моделей
 A document for this period already exists.,Документ за этот период уже существует.
 This document is not editable outside of Draft status.,Документ можно редактировать только в статусе «Черновик».
 "Brand, model and a sales quantity greater than zero are required.","Укажите бренд, модель и количество продаж больше нуля."
