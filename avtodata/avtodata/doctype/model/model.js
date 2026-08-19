@@ -5,6 +5,11 @@ frappe.ui.form.on("Model", {
 	refresh(frm) {
 		set_class_options(frm);
 		render_catalog_sections(frm);
+		if (!frm.is_new() && frm.doc.brand) {
+			frm.add_custom_button(__("Model Dashboard"), () => {
+				frappe.set_route("model-dashboard", frm.doc.brand);
+			});
+		}
 	},
 	vehicle_segment(frm) {
 		if (frm.doc.vehicle_class) {
