@@ -53,7 +53,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-09 15:39:09.859617",
+ "modified": "2026-08-11 17:30:00.000000",
  "modified_by": "Administrator",
  "module": "AvtoData",
  "name": "Vehicle Brand",
@@ -122,5 +122,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 1
+ "track_changes": 1,
+ "image_field": "logo"
 }
