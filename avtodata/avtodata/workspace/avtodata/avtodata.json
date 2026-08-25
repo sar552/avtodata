@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\": \"hdr_sales\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Продажи</b></span>\", \"col\": 12}}, {\"id\": \"sc_md\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Document\", \"col\": 3}}, {\"id\": \"sc_me\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Entry\", \"col\": 3}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_cat\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Каталог</b></span>\", \"col\": 12}}, {\"id\": \"sc_brand\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Vehicle Brand\", \"col\": 3}}, {\"id\": \"sc_model\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Model\", \"col\": 3}}, {\"id\": \"sc_trim\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Trim\", \"col\": 3}}, {\"id\": \"sc_gallery\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Model Dashboard\", \"col\": 3}}, {\"id\": \"sp2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_ref\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Справочники</b></span>\", \"col\": 12}}, {\"id\": \"card_ref\", \"type\": \"card\", \"data\": {\"card_name\": \"Справочники\", \"col\": 4}}]",
+ "content": "[{\"id\": \"hdr_sales\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Продажи</b></span>\", \"col\": 12}}, {\"id\": \"sc_md\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Document\", \"col\": 3}}, {\"id\": \"sc_me\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Entry\", \"col\": 3}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_cat\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Каталог</b></span>\", \"col\": 12}}, {\"id\": \"sc_gallery\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Model Dashboard\", \"col\": 3}}, {\"id\": \"sp2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_ref\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Справочники</b></span>\", \"col\": 12}}, {\"id\": \"card_ref\", \"type\": \"card\", \"data\": {\"card_name\": \"Справочники\", \"col\": 4}}]",
  "creation": "2026-08-09 16:48:44.034922",
  "custom_blocks": [],
  "docstatus": 0,
@@ -16,10 +16,40 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Справочники",
-   "link_count": 6,
+   "link_count": 9,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle Brand",
+   "link_count": 0,
+   "link_to": "Vehicle Brand",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Model",
+   "link_count": 0,
+   "link_to": "Model",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trim",
+   "link_count": 0,
+   "link_to": "Trim",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   },
   {
    "hidden": 0,
@@ -82,7 +112,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-08-19 17:00:00.000000",
+ "modified": "2026-08-19 18:00:00.000000",
  "modified_by": "Administrator",
  "module": "AvtoData",
  "name": "AvtoData",
@@ -114,28 +144,10 @@
    "type": "DocType"
   },
   {
-   "color": "Green",
-   "label": "Vehicle Brand",
-   "link_to": "Vehicle Brand",
-   "type": "DocType"
-  },
-  {
-   "color": "Green",
-   "label": "Model",
-   "link_to": "Model",
-   "type": "DocType"
-  },
-  {
    "color": "Orange",
    "label": "Model Dashboard",
    "link_to": "model-dashboard",
    "type": "Page"
-  },
-  {
-   "color": "Green",
-   "label": "Trim",
-   "link_to": "Trim",
-   "type": "DocType"
   }
  ],
  "title": "AvtoData"

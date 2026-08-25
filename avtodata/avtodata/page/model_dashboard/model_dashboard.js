@@ -20,6 +20,7 @@ class ModelDashboard {
 		this.trims_by_model = {};
 		this.loaded = false;
 		this.active_brand = null;
+		this.active_model = null;
 		this.active_tier = null;
 
 		this.$main.html(`
@@ -178,6 +179,100 @@ class ModelDashboard {
 					text-align: center;
 					color: var(--text-muted);
 				}
+				.md-hero {
+					display: flex;
+					flex-wrap: wrap;
+					gap: 0;
+					border: 1px solid var(--border-color);
+					border-radius: var(--border-radius-lg);
+					overflow: hidden;
+					background: var(--card-bg);
+					margin-bottom: 20px;
+				}
+				.md-hero-img {
+					flex: 1 1 380px;
+					min-height: 320px;
+					background: var(--bg-color);
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					font-size: 80px;
+				}
+				.md-hero-img img {
+					width: 100%;
+					height: 100%;
+					object-fit: contain;
+				}
+				.md-hero-info {
+					flex: 1 1 380px;
+					padding: 28px 30px;
+				}
+				.md-kicker {
+					color: var(--primary);
+					font-size: var(--text-sm);
+					font-weight: 600;
+					letter-spacing: 0.08em;
+					text-transform: uppercase;
+					margin-bottom: 6px;
+				}
+				.md-hero-title {
+					font-size: 26px;
+					font-weight: 700;
+					display: flex;
+					align-items: center;
+					gap: 10px;
+					margin-bottom: 4px;
+				}
+				.md-active-badge {
+					font-size: var(--text-sm);
+					font-weight: 500;
+					padding: 2px 10px;
+					border-radius: 999px;
+					background: var(--bg-green);
+					color: var(--text-on-green);
+				}
+				.md-hero-sub {
+					color: var(--text-muted);
+					font-size: var(--text-sm);
+					margin-bottom: 18px;
+				}
+				.md-tiles {
+					display: grid;
+					grid-template-columns: 1fr 1fr;
+					gap: 12px;
+				}
+				.md-tile {
+					border: 1px solid var(--border-color);
+					border-radius: var(--border-radius-lg);
+					padding: 12px 15px;
+					background: var(--card-bg);
+				}
+				.md-tile.md-tile-wide {
+					grid-column: 1 / -1;
+				}
+				.md-tile-label {
+					color: var(--text-muted);
+					font-size: var(--text-sm);
+					letter-spacing: 0.06em;
+					text-transform: uppercase;
+					margin-bottom: 4px;
+				}
+				.md-tile-value {
+					font-weight: 600;
+				}
+				.md-section-title {
+					font-size: var(--text-xl);
+					font-weight: 700;
+					margin: 6px 0 2px;
+				}
+				.md-trim-row {
+					border: 1px solid var(--border-color);
+					border-radius: var(--border-radius-lg);
+					padding: 14px 18px;
+					margin-top: 10px;
+					background: var(--card-bg);
+					font-weight: 600;
+				}
 			</style>
 			<div class="md-body"><div class="md-empty">${__("Loading")}...</div></div>
 		`);
@@ -208,6 +303,7 @@ class ModelDashboard {
 						"brand",
 						"vehicle_segment",
 						"vehicle_class",
+						"market_tier_override",
 						"image",
 					],
 					filters: { is_active: 1 },
@@ -243,7 +339,10 @@ class ModelDashboard {
 		if (!this.loaded) return;
 		const route = frappe.get_route();
 		this.active_brand = route[1] || null;
-		if (this.active_brand) {
+		this.active_model = route[2] || null;
+		if (this.active_model) {
+			this.render_model_detail();
+		} else if (this.active_brand) {
 			this.render_models();
 		} else {
 			this.render_brands();
@@ -392,11 +491,75 @@ class ModelDashboard {
 			);
 		};
 
+		const me = this;
 		this.$body.off(".md").on("input.md", ".md-search", draw);
 		this.$body.on("click.md", ".md-back", () => frappe.set_route("model-dashboard"));
 		this.$body.on("click.md", ".md-model-card", function () {
-			frappe.set_route("Form", "Model", $(this).data("name"));
+			frappe.set_route("model-dashboard", me.active_brand, $(this).data("name"));
 		});
 		draw();
+	}
+
+	render_model_detail() {
+		const esc = frappe.utils.escape_html;
+		const v = this.vehicles.find((x) => x.name === this.active_model);
+		if (!v) {
+			this.$body.html(`<div class="md-empty">${__("No vehicles found")}</div>`);
+			return;
+		}
+		const brand = this.brands.find((b) => b.name === v.brand);
+		const brand_label = brand ? brand.brand_name || brand.name : v.brand;
+		const trims = this.trims_by_model[v.name] || [];
+
+		const tier_code = v.market_tier_override || (brand && brand.market_tier) || "";
+		let tier_text = "—";
+		if (tier_code) {
+			tier_text = this.tier_label(tier_code);
+			if (!v.market_tier_override) {
+				tier_text += ` · ${__("Inherited from brand")}`;
+			}
+		}
+		const image = v.image ? `<img src="${esc(v.image)}">` : "🚗";
+		const tile = (label, value, wide) => `
+			<div class="md-tile ${wide ? "md-tile-wide" : ""}">
+				<div class="md-tile-label">${label}</div>
+				<div class="md-tile-value">${value || "—"}</div>
+			</div>
+		`;
+
+		const trim_rows = trims.length
+			? trims.map((t) => `<div class="md-trim-row">${esc(t)}</div>`).join("")
+			: `<div class="md-empty">${__("No records")}</div>`;
+
+		this.$body.html(`
+			<div class="md-toolbar">
+				<span class="md-back">← ${esc(brand_label)}</span>
+				<span class="md-crumb-count">${esc(brand_label)} / ${esc(v.model_name || v.name)}</span>
+			</div>
+			<div class="md-hero">
+				<div class="md-hero-img">${image}</div>
+				<div class="md-hero-info">
+					<div class="md-kicker">${__("Model Card")}</div>
+					<div class="md-hero-title">
+						${esc(brand_label)} ${esc(v.model_name || v.name)}
+						<span class="md-active-badge">${__("Active")}</span>
+					</div>
+					<div class="md-hero-sub">${__("Key product parameters and available trims.")}</div>
+					<div class="md-tiles">
+						${tile(__("Vehicle Brand"), esc(brand_label))}
+						${tile(__("Vehicle Class"), esc(v.vehicle_class || ""))}
+						${tile(__("Vehicle Segment"), esc(v.vehicle_segment || ""))}
+						${tile(__("Market Tier"), esc(tier_text), true)}
+					</div>
+				</div>
+			</div>
+			<div class="md-section-title">${__("Trims")}</div>
+			<div class="md-crumb-count">${trims.length} ${__("records")}</div>
+			${trim_rows}
+		`);
+
+		this.$body.off(".md").on("click.md", ".md-back", () => {
+			frappe.set_route("model-dashboard", v.brand);
+		});
 	}
 }

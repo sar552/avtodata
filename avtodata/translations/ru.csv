@@ -61,3 +61,8 @@ Sales quantity must be greater than zero.,Количество продаж до
 You are not permitted to perform this action.,У вас нет прав для выполнения этой операции.
 Return this document to Draft for editing?,Вернуть документ в черновик для редактирования?
 Remove this document? It will be excluded from reports.,Удалить документ? Он будет исключён из отчётов.
+Model Card,Карточка модели
+Active,Активна
+Inherited from brand,унаследовано от бренда
+Key product parameters and available trims.,Основные параметры продукта и список доступных комплектаций.
+records,записей
