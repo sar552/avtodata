@@ -303,6 +303,7 @@ class ModelDashboard {
 						"brand",
 						"vehicle_segment",
 						"vehicle_class",
+						"fuel_type",
 						"market_tier_override",
 						"image",
 					],
@@ -468,7 +469,7 @@ class ModelDashboard {
 				rows
 					.map((v) => {
 						const image = v.image ? `<img src="${esc(v.image)}" loading="lazy">` : "🚗";
-						const meta = [v.vehicle_segment, v.vehicle_class]
+						const meta = [v.vehicle_segment, v.vehicle_class, v.fuel_type]
 							.filter(Boolean)
 							.map(esc)
 							.join(" · ");
@@ -549,6 +550,7 @@ class ModelDashboard {
 						${tile(__("Vehicle Brand"), esc(brand_label))}
 						${tile(__("Vehicle Class"), esc(v.vehicle_class || ""))}
 						${tile(__("Vehicle Segment"), esc(v.vehicle_segment || ""))}
+						${tile(__("Fuel Type"), esc(v.fuel_type || ""))}
 						${tile(__("Market Tier"), esc(tier_text), true)}
 					</div>
 				</div>

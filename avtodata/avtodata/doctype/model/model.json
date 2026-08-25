@@ -13,6 +13,7 @@
   "brand",
   "vehicle_segment",
   "vehicle_class",
+  "fuel_type",
   "column_break_main",
   "market_tier_override",
   "image",
@@ -41,6 +42,14 @@
    "fieldname": "vehicle_class",
    "fieldtype": "Select",
    "label": "Vehicle Class"
+  },
+  {
+   "fieldname": "fuel_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Fuel Type",
+   "options": "Fuel Type"
   },
   {
    "fieldname": "column_break_main",
@@ -90,7 +99,7 @@
    "link_fieldname": "model"
   }
  ],
- "modified": "2026-08-19 17:00:00.000000",
+ "modified": "2026-08-20 10:00:00.000000",
  "modified_by": "Administrator",
  "module": "AvtoData",
  "name": "Model",
