@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\": \"hdr_sales\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Продажи</b></span>\", \"col\": 12}}, {\"id\": \"sc_md\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Document\", \"col\": 3}}, {\"id\": \"sc_me\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Entry\", \"col\": 3}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_cat\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Каталог</b></span>\", \"col\": 12}}, {\"id\": \"sc_brand\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Vehicle Brand\", \"col\": 3}}, {\"id\": \"sc_model\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Model\", \"col\": 3}}, {\"id\": \"sc_version\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Model Version\", \"col\": 3}}, {\"id\": \"sc_generation\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Generation\", \"col\": 3}}, {\"id\": \"sc_trim\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Trim\", \"col\": 3}}, {\"id\": \"sc_gallery\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Model Dashboard\", \"col\": 3}}, {\"id\": \"sp2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_ref\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Справочники</b></span>\", \"col\": 12}}, {\"id\": \"card_ref\", \"type\": \"card\", \"data\": {\"card_name\": \"Справочники\", \"col\": 4}}]",
+ "content": "[{\"id\": \"hdr_sales\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Продажи</b></span>\", \"col\": 12}}, {\"id\": \"sc_md\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Document\", \"col\": 3}}, {\"id\": \"sc_me\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Market Entry\", \"col\": 3}}, {\"id\": \"sp1\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_cat\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Каталог</b></span>\", \"col\": 12}}, {\"id\": \"sc_brand\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Vehicle Brand\", \"col\": 3}}, {\"id\": \"sc_model\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Model\", \"col\": 3}}, {\"id\": \"sc_trim\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Trim\", \"col\": 3}}, {\"id\": \"sc_gallery\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Model Dashboard\", \"col\": 3}}, {\"id\": \"sp2\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"hdr_ref\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Справочники</b></span>\", \"col\": 12}}, {\"id\": \"card_ref\", \"type\": \"card\", \"data\": {\"card_name\": \"Справочники\", \"col\": 4}}]",
  "creation": "2026-08-09 16:48:44.034922",
  "custom_blocks": [],
  "docstatus": 0,
@@ -82,7 +82,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-08-11 12:05:00.000000",
+ "modified": "2026-08-19 17:00:00.000000",
  "modified_by": "Administrator",
  "module": "AvtoData",
  "name": "AvtoData",
@@ -135,18 +135,6 @@
    "color": "Green",
    "label": "Trim",
    "link_to": "Trim",
-   "type": "DocType"
-  },
-  {
-   "color": "Green",
-   "label": "Generation",
-   "link_to": "Generation",
-   "type": "DocType"
-  },
-  {
-   "color": "Green",
-   "label": "Model Version",
-   "link_to": "Model Version",
    "type": "DocType"
   }
  ],

@@ -15,11 +15,8 @@
   "vehicle_class",
   "column_break_main",
   "market_tier_override",
+  "image",
   "is_active",
-  "section_generations",
-  "generations_html",
-  "section_versions",
-  "versions_html",
   "section_trims",
   "trims_html"
  ],
@@ -64,29 +61,16 @@
    "options": "Brand Market Tier"
   },
   {
+   "fieldname": "image",
+   "fieldtype": "Attach Image",
+   "label": "Image"
+  },
+  {
    "default": "1",
    "fieldname": "is_active",
    "fieldtype": "Check",
    "in_standard_filter": 1,
    "label": "Is Active"
-  },
-  {
-   "fieldname": "section_generations",
-   "fieldtype": "Section Break",
-   "label": "Generations"
-  },
-  {
-   "fieldname": "generations_html",
-   "fieldtype": "HTML"
-  },
-  {
-   "fieldname": "section_versions",
-   "fieldtype": "Section Break",
-   "label": "Model Versions"
-  },
-  {
-   "fieldname": "versions_html",
-   "fieldtype": "HTML"
   },
   {
    "fieldname": "section_trims",
@@ -102,15 +86,11 @@
  "index_web_pages_for_search": 1,
  "links": [
   {
-   "link_doctype": "Generation",
-   "link_fieldname": "model"
-  },
-  {
    "link_doctype": "Trim",
    "link_fieldname": "model"
   }
  ],
- "modified": "2026-08-11 18:00:00.000000",
+ "modified": "2026-08-19 17:00:00.000000",
  "modified_by": "Administrator",
  "module": "AvtoData",
  "name": "Model",

@@ -11,17 +11,7 @@ Model Name,Название модели
 Trim,Комплектация
 Trims,Комплектации
 Trim Name,Название комплектации
-Generation,Поколение
-Generations,Поколения
-Generation Name,Название поколения
-Model Version,Версия
-Model Versions,Версии
-Version Name,Название версии
-Is Main,Основная
-Is Restyling,Рестайлинг
-Engine,Двигатель
 No records,Записей пока нет
-Add a generation first.,Сначала добавьте поколение.
 Vehicle Segment,Сегмент
 Vehicle Segments,Сегменты
 Vehicle Class,Класс автомобиля
@@ -71,8 +61,3 @@ Sales quantity must be greater than zero.,Количество продаж до
 You are not permitted to perform this action.,У вас нет прав для выполнения этой операции.
 Return this document to Draft for editing?,Вернуть документ в черновик для редактирования?
 Remove this document? It will be excluded from reports.,Удалить документ? Он будет исключён из отчётов.
-Production Start,Начало производства
-Production End,Конец производства
-Model Year Start,Модельные годы — с
-Model Year End,Модельные годы — по
-End date cannot be before start date.,Дата окончания не может быть раньше даты начала.

@@ -18,8 +18,6 @@ class ModelDashboard {
 		this.brands = [];
 		this.vehicles = [];
 		this.trims_by_model = {};
-		this.gens_by_model = {};
-		this.versions_by_model = {};
 		this.loaded = false;
 		this.active_brand = null;
 		this.active_tier = null;
@@ -35,6 +33,7 @@ class ModelDashboard {
 				}
 				.md-search {
 					max-width: 280px;
+					flex: 0 0 auto;
 				}
 				.md-back {
 					display: inline-flex;
@@ -85,20 +84,6 @@ class ModelDashboard {
 					border: 1px solid var(--border-color);
 					font-size: var(--text-sm);
 					color: var(--text-muted);
-				}
-				.md-gen-chip {
-					border: 1px solid var(--border-color);
-					border-radius: 999px;
-					padding: 1px 9px;
-					cursor: pointer;
-					display: inline-block;
-					margin: 2px 2px 0 0;
-					background: var(--bg-color);
-				}
-				.md-gen-chip.active {
-					background: var(--primary);
-					color: #fff;
-					border-color: var(--primary);
 				}
 				.md-crumb-brand {
 					font-size: var(--text-lg);
@@ -217,7 +202,14 @@ class ModelDashboard {
 				method: "frappe.client.get_list",
 				args: {
 					doctype: "Model",
-					fields: ["name", "model_name", "brand", "vehicle_segment", "vehicle_class"],
+					fields: [
+						"name",
+						"model_name",
+						"brand",
+						"vehicle_segment",
+						"vehicle_class",
+						"image",
+					],
 					filters: { is_active: 1 },
 					order_by: "model_name asc",
 					limit_page_length: 0,
@@ -233,51 +225,13 @@ class ModelDashboard {
 					limit_page_length: 0,
 				},
 			}),
-			frappe.call({
-				method: "frappe.client.get_list",
-				args: {
-					doctype: "Generation",
-					fields: ["name", "generation_name", "model", "is_main", "image"],
-					filters: { is_active: 1 },
-					order_by: "creation asc",
-					limit_page_length: 0,
-				},
-			}),
-			frappe.call({
-				method: "frappe.client.get_list",
-				args: {
-					doctype: "Model Version",
-					fields: ["version_name", "generation"],
-					filters: { is_active: 1 },
-					order_by: "creation asc",
-					limit_page_length: 0,
-				},
-			}),
-		]).then(([brands_r, models_r, trims_r, gens_r, versions_r]) => {
+		]).then(([brands_r, models_r, trims_r]) => {
 			this.brands = brands_r.message || [];
 			this.vehicles = models_r.message || [];
 			this.trims_by_model = {};
 			for (const t of trims_r.message || []) {
 				(this.trims_by_model[t.model] = this.trims_by_model[t.model] || []).push(
 					t.trim_name
-				);
-			}
-			this.gens_by_model = {};
-			const gen_model = {};
-			for (const g of gens_r.message || []) {
-				gen_model[g.name] = g.model;
-				(this.gens_by_model[g.model] = this.gens_by_model[g.model] || []).push({
-					label: g.generation_name + (g.is_main ? " ★" : ""),
-					image: g.image || "",
-					is_main: g.is_main,
-				});
-			}
-			this.versions_by_model = {};
-			for (const v of versions_r.message || []) {
-				const model = gen_model[v.generation];
-				if (!model) continue;
-				(this.versions_by_model[model] = this.versions_by_model[model] || []).push(
-					v.version_name
 				);
 			}
 			this.loaded = true;
@@ -402,9 +356,7 @@ class ModelDashboard {
 			const rows = this.vehicles.filter((v) => {
 				if (v.brand !== this.active_brand) return false;
 				const trims = this.trims_by_model[v.name] || [];
-				const gens = (this.gens_by_model[v.name] || []).map((g) => g.label);
-				const versions = this.versions_by_model[v.name] || [];
-				const haystack = `${v.model_name} ${trims.join(" ")} ${gens.join(" ")} ${versions.join(" ")}`;
+				const haystack = `${v.model_name} ${trims.join(" ")}`;
 				return !query || haystack.toLowerCase().includes(query);
 			});
 			if (!rows.length) {
@@ -416,47 +368,21 @@ class ModelDashboard {
 			this.$body.find(".md-grid").html(
 				rows
 					.map((v) => {
-						const all_gens = this.gens_by_model[v.name] || [];
-						const main_gen =
-							all_gens.find((g) => g.is_main && g.image) ||
-							all_gens.find((g) => g.image);
-						const base_img = main_gen ? main_gen.image : "";
-						const image = base_img
-							? `<img src="${esc(base_img)}" loading="lazy">`
-							: "🚗";
+						const image = v.image ? `<img src="${esc(v.image)}" loading="lazy">` : "🚗";
 						const meta = [v.vehicle_segment, v.vehicle_class]
 							.filter(Boolean)
 							.map(esc)
 							.join(" · ");
-						const detail_line = (label, values) =>
-							values.length
-								? `<div class="md-meta">${label}: ${values.map(esc).join(", ")}</div>`
-								: "";
-						const gens = this.gens_by_model[v.name] || [];
-						const gens_line = gens.length
-							? `<div class="md-meta">${__("Generations")}: ${gens
-									.map(
-										(g) =>
-											`<span class="md-gen-chip" data-img="${esc(g.image)}">${esc(g.label)}</span>`
-									)
-									.join("")}</div>`
+						const trims = this.trims_by_model[v.name] || [];
+						const trims_line = trims.length
+							? `<div class="md-meta">${__("Trims")}: ${trims.map(esc).join(", ")}</div>`
 							: "";
-						const versions_line = detail_line(
-							__("Model Versions"),
-							this.versions_by_model[v.name] || []
-						);
-						const trims_line = detail_line(
-							__("Trims"),
-							this.trims_by_model[v.name] || []
-						);
 						return `
-							<div class="md-card md-model-card" data-name="${esc(v.name)}" data-img="${esc(base_img)}">
+							<div class="md-card md-model-card" data-name="${esc(v.name)}">
 								<div class="md-image">${image}</div>
 								<div class="md-info">
 									<div class="md-model">${esc(v.model_name || v.name)}</div>
 									<div class="md-meta">${meta}</div>
-									${gens_line}
-									${versions_line}
 									${trims_line}
 								</div>
 							</div>
@@ -470,25 +396,6 @@ class ModelDashboard {
 		this.$body.on("click.md", ".md-back", () => frappe.set_route("model-dashboard"));
 		this.$body.on("click.md", ".md-model-card", function () {
 			frappe.set_route("Form", "Model", $(this).data("name"));
-		});
-		this.$body.on("click.md", ".md-gen-chip", function (e) {
-			e.stopPropagation();
-			const $chip = $(this);
-			const $card = $chip.closest(".md-model-card");
-			const was_active = $chip.hasClass("active");
-			$card.find(".md-gen-chip").removeClass("active");
-			let src = $card.data("img") || "";
-			if (!was_active) {
-				$chip.addClass("active");
-				src = $chip.data("img") || src;
-			}
-			$card
-				.find(".md-image")
-				.html(
-					src
-						? `<img src="${frappe.utils.escape_html(src)}" loading="lazy">`
-						: "🚗"
-				);
 		});
 		draw();
 	}
