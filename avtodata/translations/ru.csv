@@ -30,10 +30,6 @@ Market Tier Override,Позиционирование модели
 Period Month,Отчётный период
 Document Number,Номер документа
 Sales Quantity,Количество продаж
-Source Reference,Ссылка на источник
-Data Quality,Статус проверки
-Sales Channel,Канал продаж
-Comment,Комментарий
 Code,Код
 Logo,Логотип
 Source URL,URL источника

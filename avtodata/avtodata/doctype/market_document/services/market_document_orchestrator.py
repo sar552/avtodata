@@ -24,6 +24,7 @@ class MarketDocumentOrchestrator:
 
 		entry = frappe.new_doc("Market Entry")
 		entry.market_document = document.name
+		entry.brand = brand
 		entry.model = model
 		entry.trim = trim
 		entry.sales_quantity = sales_quantity
@@ -36,19 +37,7 @@ class MarketDocumentOrchestrator:
 		source_rows = frappe.get_all(
 			"Market Entry",
 			filters={"market_document": source_id},
-			fields=[
-				"model",
-				"trim",
-				"region",
-				"city",
-				"source",
-				"source_reference",
-				"price",
-				"sales_quantity",
-				"sales_channel",
-				"data_quality",
-				"comment",
-			],
+			fields=["brand", "model", "trim", "sales_quantity"],
 		)
 
 		document = frappe.new_doc("Market Document")
