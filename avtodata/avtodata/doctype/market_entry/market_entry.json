@@ -10,7 +10,7 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "market_document",
+  "date",
   "brand",
   "model",
   "trim",
@@ -26,12 +26,12 @@
    "options": "ME-.#####"
   },
   {
-   "fieldname": "market_document",
-   "fieldtype": "Link",
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "label": "Market Document",
-   "options": "Market Document",
+   "label": "Date",
    "reqd": 1
   },
   {
@@ -71,7 +71,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-08-20 11:00:00.000000",
+ "modified": "2026-08-20 12:00:00.000000",
  "modified_by": "Administrator",
  "module": "AvtoData",
  "name": "Market Entry",

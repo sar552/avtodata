@@ -130,9 +130,9 @@ fixtures = [
 # -----------
 # Permissions evaluated in scripted ways
 
-permission_query_conditions = {
-	"Market Document": "avtodata.avtodata.doctype.market_document.market_document.get_permission_query_conditions",
-}
+# permission_query_conditions = {
+# 	"ToDo": "app.permissions.todo_query",
+# }
 
 # DocType Class
 # ---------------

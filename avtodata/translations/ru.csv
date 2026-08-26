@@ -1,5 +1,3 @@
-Market Document,Документ продаж
-Market Documents,Документы продаж
 Market Entry,Строка продаж
 Market Entries,Строки продаж
 Vehicle Brand,Бренд
@@ -27,38 +25,22 @@ Data Sources,Источники данных
 Brand Market Tier,Позиционирование бренда
 Market Tier,Позиционирование
 Market Tier Override,Позиционирование модели
-Period Month,Отчётный период
-Document Number,Номер документа
 Sales Quantity,Количество продаж
 Code,Код
 Logo,Логотип
 Source URL,URL источника
 Model Dashboard,Дашборд моделей
-Publish,Опубликовать
-Reopen,Вернуть в черновик
-Copy Document,Копировать документ
-Delete Document,Удалить документ
-New Period,Новый период
-Actions,Действия
 Search model...,Поиск модели...
 No vehicles found,Модели не найдены
 Brands,Бренды
 Search brand...,Поиск бренда или страны...
 No brands found,Бренды не найдены
 models,моделей
-A document for this period already exists.,Документ за этот период уже существует.
-This document is not editable outside of Draft status.,Документ можно редактировать только в статусе «Черновик».
-"Brand, model and a sales quantity greater than zero are required.","Укажите бренд, модель и количество продаж больше нуля."
-The selected model does not belong to the selected brand.,Выбранная модель не относится к выбранному бренду.
-Cannot publish a document with no entries.,Нельзя опубликовать документ без строк.
-Document not found or not in Draft status.,Документ не найден или не в статусе «Черновик».
-Entries can only be modified while the document is in Draft status.,Строки можно изменять только пока документ в статусе «Черновик».
 Sales quantity must be greater than zero.,Количество продаж должно быть больше нуля.
 You are not permitted to perform this action.,У вас нет прав для выполнения этой операции.
-Return this document to Draft for editing?,Вернуть документ в черновик для редактирования?
-Remove this document? It will be excluded from reports.,Удалить документ? Он будет исключён из отчётов.
 Model Card,Карточка модели
 Active,Активна
 Inherited from brand,унаследовано от бренда
 Key product parameters and available trims.,Основные параметры продукта и список доступных комплектаций.
 records,записей
+Date,Дата

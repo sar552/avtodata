@@ -11,8 +11,6 @@ import frappe
 from frappe import _
 
 PERMISSION_ROLE_MAP = {
-	"sales.manage": {"AvtoData Admin", "AvtoData Dispatcher"},
-	"sales.publish": {"AvtoData Admin", "AvtoData Dispatcher"},
 	"users.manage": {"AvtoData Admin"},
 	"roles.manage": {"AvtoData Admin"},
 }
