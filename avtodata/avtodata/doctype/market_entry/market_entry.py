@@ -9,5 +9,5 @@ from frappe.utils import flt
 
 class MarketEntry(Document):
 	def validate(self):
-		if flt(self.sales_quantity) <= 0 and not frappe.flags.in_import:
-			frappe.throw(_("Sales quantity must be greater than zero."))
+		if flt(self.sales_quantity) < 0:
+			frappe.throw(_("Sales quantity cannot be negative."))

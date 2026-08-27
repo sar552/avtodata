@@ -36,7 +36,6 @@ Brands,Бренды
 Search brand...,Поиск бренда или страны...
 No brands found,Бренды не найдены
 models,моделей
-Sales quantity must be greater than zero.,Количество продаж должно быть больше нуля.
 You are not permitted to perform this action.,У вас нет прав для выполнения этой операции.
 Model Card,Карточка модели
 Active,Активна
@@ -44,3 +43,4 @@ Inherited from brand,унаследовано от бренда
 Key product parameters and available trims.,Основные параметры продукта и список доступных комплектаций.
 records,записей
 Date,Дата
+Sales quantity cannot be negative.,Количество продаж не может быть отрицательным.

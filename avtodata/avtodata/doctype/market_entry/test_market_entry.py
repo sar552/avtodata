@@ -17,13 +17,13 @@ class TestMarketEntry(FrappeTestCase):
 		entry.sales_quantity = quantity
 		return entry
 
-	def test_quantity_must_be_positive(self):
-		entry = self._new_entry(0)
+	def test_negative_quantity_is_rejected(self):
+		entry = self._new_entry(-1)
 		with self.assertRaises(frappe.ValidationError):
 			entry.insert()
 
-	def test_valid_entry_is_saved(self):
-		entry = self._new_entry(5)
+	def test_zero_quantity_is_allowed(self):
+		entry = self._new_entry(0)
 		entry.insert()
 		self.assertTrue(entry.name)
 		entry.delete()
