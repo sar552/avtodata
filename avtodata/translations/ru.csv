@@ -44,3 +44,120 @@ Key product parameters and available trims.,Основные параметры 
 records,записей
 Date,Дата
 Sales quantity cannot be negative.,Количество продаж не может быть отрицательным.
+Sales Analytics,Аналитика продаж
+Sales Dashboard,Дашборд продаж
+Market Segments,Сегменты рынка
+No sales entries yet,Строк продаж пока нет
+No sales entries with a segment yet,Пока нет строк продаж с указанным сегментом
+Data,Данные
+Vehicle type,Тип авто
+All brands,Все бренды
+All models,Все модели
+All types,Все типы
+All segments,Все сегменты
+All powertrains,Все установки
+Powertrain,Силовая установка
+Reset filters,Сбросить фильтры
+"Sales, units","Количество продаж, шт."
+comparable months to previous year,сопоставимых мес. к прошлому году
+comparable months,сопоставимых мес.
+Click to filter,Нажмите для фильтра
+"Brands, count","Количество брендов, шт."
+"Models, count","Количество моделей, шт."
+Brand positioning,Позиционирование брендов
+"Period, type, segment and powertrain apply; brand and model do not narrow the share base. Click a tier to filter.","Период, тип, сегмент и силовая установка учитываются; бренд и модель не сужают базу доли. Нажмите на категорию для фильтрации."
+units,шт.
+brands,брендов
+Main market dynamics,Основная динамика рынка
+"Sales volume by years and months, market structure by vehicle types","Объём продаж по годам и месяцам, структура рынка по типам автомобилей"
+Yearly sales dynamics,Годовая динамика продаж
+Click a year to filter,Нажмите на год для фильтрации
+Monthly sales dynamics,Месячная динамика продаж
+Last 12 months of the selected period,Последние 12 месяцев выбранного периода
+Top-15 models,ТОП-15 моделей
+Sales leaders for the selected period,Лидеры продаж за выбранный период
+Vehicle type share,Доля типов автомобилей
+"Market structure: PC, SUV, LCV and other types","Структура рынка: PC, SUV, LCV и другие типы"
+Top-10 brands,ТОП-10 брендов
+"MoM, YoY and change drivers","MoM, YoY и драйверы изменений"
+Same-period comparison and brand contribution to the change in sales volume,Сравнение одинаковых периодов и вклад брендов в изменение объёма продаж
+Month-by-month comparison of the same periods,Помесячное сравнение одинаковых периодов
+Change drivers,Драйверы изменения
+Brand contribution to the change in sales,Вклад брендов в изменение продаж
+No comparable months,Нет сопоставимых месяцев
+Market share dynamics,Динамика доли рынка
+Top-5 of the selected level; share is computed from the whole filtered market,ТОП-5 выбранного уровня; доля считается от всего отфильтрованного рынка
+By months,По месяцам
+By quarters,По кварталам
+By years,По годам
+Market rating,Рейтинг рынка
+rating and share for the selected slice,рейтинг и доля за выбранный срез
+Market share,Доля рынка
+Position,Позиция
+New,Новая
+vs,к
+Segment size,Размер сегмента
+vs previous period,К предыдущему периоду
+was,было
+Year over year · YoY,Год к году · YoY
+comparable period,сопоставимый период
+Slice leader,Лидер среза
+of the market,рынка
+Participants,Участники
+brands / models with sales,брендов / моделей с продажами
+Last month,Последний месяц
+Focus model,Фокус-модель
+"Sales, share and position","Продажи, доля и позиция"
+for the period,за период
+Sales for the period,Продажи за период
+Segment rating,Рейтинг сегмента
+Top-3 models,ТОП-3 моделей
+Click a card to change the focus,Нажмите на карточку — она меняет фокус
+positions,поз.
+Position unchanged,Позиция без изменений
+Segment dynamics,Динамика сегмента
+Total sales by months,Общие продажи по месяцам
+Segment structure,Структура сегмента
+Market share by brands,Доля рынка по брендам
+Brand share dynamics,Динамика долей брендов
+Top-5 brands · percent of segment by months,ТОП-5 брендов · процент сегмента по месяцам
+Growth diagnostics,Диагностика роста
+Change drivers MoM,Драйверы изменения MoM
+Segment comparison,Сравнение сегментов
+Click a row to open the segment,Нажмите на строку чтобы открыть сегмент
+Full model rating,Полный рейтинг моделей
+Show full rating,Показать полный рейтинг
+Hide rating,Скрыть рейтинг
+Brand / model,Бренд / модель
+Movement,Движение
+Print / PDF,Печать или PDF
+"Market share, %","Доля рынка, %"
+Year,Год
+Period,Период
+k,тыс.
+Period from,Период с
+Period to,Период по
+Year to date,С начала года (YTD)
+First half-year,1-е полугодие
+Second half-year,2-е полугодие
+Full year,Полный год
+months with data,мес. с данными
+Timespan,Период
+Date range,Диапазон дат
+All time,Весь период
+Last 3 months,Последние 3 месяца
+Last 6 months,Последние 6 месяцев
+Last 12 months,Последние 12 месяцев
+Last year,Прошлый год
+Custom,Произвольный
+Selected,Выбрано
+From date,Дата с
+To date,Дата по
+Applied,Применено
+click again to clear,нажмите ещё раз чтобы снять
+All,Все
+Brand,Бренд
+Loading,Загрузка
+Sales,Продажи
+Segment,Сегмент
+months,мес.
