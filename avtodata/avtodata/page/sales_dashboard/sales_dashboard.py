@@ -380,3 +380,98 @@ def get_segment_data(filters=None):
 		"brand_share": brand_share, "brand_dynamics": brand_dynamics,
 		"drivers": {"rows": drivers, "from": prev_m, "to": last},
 	}
+
+
+# -------------------------------------------------------------- COMPARE TAB
+@frappe.whitelist()
+def get_compare_data(models=None):
+	"""2–4 ta modelni yonma-yon solishtirish: karta ma'lumotlari, sotuv
+	statistikasi, oylik dinamika va o'z segmentidagi ulush/o'rin."""
+	if isinstance(models, str):
+		models = frappe.parse_json(models)
+	models = [m for m in (models or []) if m][:4]
+	if not models:
+		return {"models": [], "months": [], "series": [], "yearly": []}
+
+	rows = _load_rows()
+	by_ym = _sum_by(rows, "ym")
+	seg_by_ym = defaultdict(lambda: defaultdict(int))
+	seg_totals = defaultdict(int)
+	model_seg_totals = defaultdict(lambda: defaultdict(int))
+	for r in rows:
+		if r.segment:
+			seg_by_ym[r.segment][r.ym] += r.qty
+			seg_totals[r.segment] += r.qty
+			model_seg_totals[r.segment][r.model] += r.qty
+
+	all_months = sorted(by_ym)
+	if not all_months:
+		return {"models": [], "months": [], "series": [], "yearly": []}
+	last = all_months[-1]
+	last12 = _months_between(_ym_shift(last, -11), last)
+	years = sorted({m[:4] for m in all_months})
+	prev_m, yoy_m = _ym_shift(last, -1), _ym_shift(last, -12)
+
+	out, series, yearly = [], [], []
+	for name in models:
+		doc = frappe.db.get_value(
+			"Model", name,
+			["name", "model_name", "brand", "vehicle_segment", "vehicle_class", "fuel_type", "market_tier_override", "image", "is_active"],
+			as_dict=True,
+		)
+		if not doc:
+			continue
+		brand = frappe.db.get_value("Vehicle Brand", doc.brand, ["brand_name", "market_tier", "logo"], as_dict=True) or {}
+		mrows = [r for r in rows if r.model == name]
+		m_by_ym = _sum_by(mrows, "ym")
+		total = sum(m_by_ym.values())
+		segment = f"{doc.vehicle_segment}-{doc.vehicle_class}" if doc.vehicle_segment and doc.vehicle_class else doc.vehicle_segment
+		seg_rank = None
+		if segment and model_seg_totals.get(segment):
+			ranking = sorted(model_seg_totals[segment].items(), key=lambda x: -x[1])
+			seg_rank = next((i + 1 for i, (mm, _) in enumerate(ranking) if mm == name), None)
+		last_share = round(m_by_ym.get(last, 0) / seg_by_ym[segment][last] * 100, 1) if segment and seg_by_ym[segment].get(last) else None
+		y12 = sum(m_by_ym.get(m, 0) for m in last12)
+		y12_prev = sum(m_by_ym.get(_ym_shift(m, -12), 0) for m in last12)
+		peak = max(m_by_ym.items(), key=lambda x: x[1]) if m_by_ym else None
+		active_months = [m for m in all_months if m in m_by_ym]
+		out.append({
+			"model": name, "label": doc.model_name or name, "brand": brand.get("brand_name") or doc.brand,
+			"image": doc.image or "", "logo": brand.get("logo") or "",
+			"vtype": doc.vehicle_segment, "vclass": doc.vehicle_class, "segment": segment, "fuel": doc.fuel_type,
+			"tier": doc.market_tier_override or brand.get("market_tier") or "", "tier_inherited": not doc.market_tier_override,
+			"is_active": cint(doc.is_active),
+			"total": total, "last": m_by_ym.get(last, 0), "mom": _pct(m_by_ym.get(last, 0), m_by_ym.get(prev_m, 0)),
+			"yoy": _pct(m_by_ym.get(last, 0), m_by_ym.get(yoy_m, 0)),
+			"last12": y12, "last12_growth": _pct(y12, y12_prev),
+			"avg_month": round(total / len(active_months)) if active_months else 0,
+			"peak": {"ym": peak[0], "qty": peak[1]} if peak else None,
+			"first_month": active_months[0] if active_months else None,
+			"segment_rank": seg_rank, "segment_size": model_seg_totals.get(segment) and len(model_seg_totals[segment]) or 0,
+			"segment_share_last": last_share,
+			"market_share_last": round(m_by_ym.get(last, 0) / by_ym[last] * 100, 2) if by_ym.get(last) else None,
+		})
+		series.append({"model": name, "label": f"{brand.get('brand_name') or doc.brand} {doc.model_name or name}", "values": [m_by_ym.get(m, 0) for m in last12]})
+		yearly.append({"model": name, "values": [sum(q for ym, q in m_by_ym.items() if ym.startswith(y)) for y in years]})
+
+	return {"models": out, "months": last12, "series": series, "years": years, "yearly": yearly, "last": last}
+
+
+@frappe.whitelist()
+def search_models(txt=None, exclude=None, segment=None):
+	"""Solishtirish uchun model qidiruvi: brend/model nomi bo'yicha, ixtiyoriy
+	segment cheklovi ('Прямые аналоги' rejimi)."""
+	if isinstance(exclude, str):
+		exclude = frappe.parse_json(exclude)
+	filters = {"is_active": 1}
+	if segment and "-" in segment:
+		vtype, vclass = segment.split("-", 1)
+		filters.update({"vehicle_segment": vtype, "vehicle_class": vclass})
+	rows = frappe.get_all(
+		"Model", filters=filters,
+		or_filters=[["model_name", "like", f"%{txt}%"], ["brand", "like", f"%{txt}%"], ["name", "like", f"%{txt}%"]] if txt else None,
+		fields=["name", "model_name", "brand", "vehicle_segment", "vehicle_class", "fuel_type", "image"],
+		order_by="brand asc, model_name asc", limit_page_length=30,
+	)
+	exclude = set(exclude or [])
+	return [r for r in rows if r.name not in exclude]

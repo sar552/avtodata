@@ -161,3 +161,53 @@ Loading,Загрузка
 Sales,Продажи
 Segment,Сегмент
 months,мес.
+Model Comparison,Сравнение моделей
+Show 10 more,Показать ещё 10
+Top models,ТОП моделей
+no data,нет данных
+Add model,Добавить модель
+Selection mode,Режим подбора
+Direct analogs (same segment),Прямые аналоги (тот же сегмент)
+Full catalog,Универсальный каталог
+Search brand or model,Поиск бренда или модели
+Models not found,Модели не найдены
+Remove,Убрать
+Base model,Базовая модель
+Powertrain not set,Тип агрегата не указан
+Segment rank,Позиция в сегменте
+of,из
+Compare two to four models by common indicators; the first model sets the segment for direct analogs.,"Сопоставляйте от двух до четырёх моделей по единым показателям; первая модель задаёт сегмент для прямых аналогов."
+Copy link,Копировать ссылку
+Clear,Очистить
+Selected models,Выбранные модели
+Sales indicators,Показатели продаж
+"Best value is green, worst is red · data as of","Лучшее значение — зелёным, худшее — красным · данные на"
+Only differences,Только различия
+Indicator,Показатель
+Sales last month,Продажи за последний месяц
+"Sales, last 12 months","Продажи за последние 12 месяцев"
+"Growth, last 12 months","Рост за последние 12 месяцев"
+"Sales, all time","Продажи за всё время"
+Average per month,Среднее в месяц
+Peak month,Пиковый месяц
+"Segment share, last month","Доля сегмента, последний месяц"
+"Market share, last month","Доля рынка, последний месяц"
+On the market since,На рынке с
+Sales dynamics of models,Динамика продаж моделей
+Sales by years,Продажи по годам
+Add at least one more model to compare.,Добавьте ещё одну модель для сравнения.
+Add two to four models to compare.,Добавьте от двух до четырёх моделей для сравнения.
+Could not load comparison data,Не удалось загрузить данные сравнения
+click to filter,нажмите для фильтра
+Other,Прочие
+Head-to-head,Лицом к лицу
+"Who leads on each indicator, last 12 months","Кто лидирует по каждому показателю, последние 12 месяцев"
+Months as leader,Месяцев лидерства
+"Last 12 months, each model on its own scale · the leader of each month is marked below","Последние 12 месяцев, у каждой модели своя шкала · лидер каждого месяца отмечен ниже"
+avg,ср.
+mo,мес.
+peak,пик
+Monthly leader,Лидер месяца
+Which model sold the most in each month,Какая модель продавалась лучше в каждом месяце
+Share among selected models,Доля среди выбранных моделей
+Full history,Вся история
