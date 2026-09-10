@@ -20,6 +20,8 @@ const fmtk = (n) => (n == null ? "—" : Math.abs(n) >= 10000 ? (n / 1000).toLoc
 const pct = (v, digits = 1) => (v == null ? "—" : (v > 0 ? "+" : "") + v.toLocaleString("ru-RU", { maximumFractionDigits: digits }) + "%");
 const cls = (v) => (v == null ? "" : v > 0 ? "sd-up" : v < 0 ? "sd-down" : "");
 const mlabel = (ym) => moment(ym, "YYYY-MM").format("MMM YY");
+// Zich grafikda: faqat oy nomi; yil — birinchi ustunda va har yanvarda.
+const mshort = (ym, force_year) => moment(ym, "YYYY-MM").format(force_year || ym.slice(5) === "01" ? "MMM YY" : "MMM");
 const esc = (s) => frappe.utils.escape_html(String(s == null ? "" : s));
 
 class SalesDashboard {
@@ -60,9 +62,10 @@ class SalesDashboard {
 				@media (max-width: 900px) { .sd-panel, .sd-panel.c6, .sd-panel.c8 { grid-column: span 12; } }
 				.sd-panel h4 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; margin: 0 0 2px; }
 				.sd-panel .hint { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; }
-				.sd-hbar { display: grid; grid-template-columns: minmax(110px, 30%) 1fr 80px; gap: 8px; align-items: center; font-size: 14px; padding: 4px 0; }
+				.sd-hbar { display: grid; grid-template-columns: minmax(96px, 32%) 1fr minmax(64px, auto); gap: 8px; align-items: center; font-size: 13px; padding: 1px 0; }
+				.sd-hbar .l { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 				.sd-hbar .n { color: var(--text-muted); font-size: 11px; margin-right: 4px; }
-				.sd-hbar .bar { height: 18px; border-radius: 4px; background: var(--s, var(--primary)); min-width: 2px; }
+				.sd-hbar .bar { height: 13px; border-radius: 3px; background: var(--s, var(--primary)); min-width: 2px; }
 				.sd-hbar .val { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
 				.sd-hbar.cur .l { font-weight: 700; }
 				.sd-drv { display: grid; grid-template-columns: minmax(100px, 28%) 1fr; gap: 8px; align-items: center; font-size: 14px; padding: 3px 0; }
@@ -100,9 +103,10 @@ class SalesDashboard {
 				.sd-badge { border: 1px solid var(--border-color); border-radius: 999px; padding: 1px 8px; font-size: 11px; color: var(--text-muted); }
 				.sd-stats { font-size: 14px; } .sd-stats div { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px dashed var(--border-color); } .sd-stats b { font-variant-numeric: tabular-nums; }
 				.sd-empty { padding: 40px; text-align: center; color: var(--text-muted); }
-				.sd-bars { --n: 12; position: relative; display: grid; grid-template-columns: 44px 1fr; gap: 6px; }
-				.sd-bars .axis { position: relative; height: var(--h, 220px); font-size: 11px; color: var(--text-muted); }
-				.sd-bars .axis span { position: absolute; right: 4px; transform: translateY(-50%); }
+				.sd-bars { --n: 12; position: relative; display: grid; grid-template-columns: auto 1fr; gap: 6px; padding-top: 18px; }
+				.sd-bars .cap { position: absolute; top: 0; right: 0; font-size: 11px; color: var(--text-muted); letter-spacing: .04em; }
+				.sd-bars .axis { position: relative; height: var(--h, 220px); font-size: 11px; color: var(--text-muted); min-width: 30px; }
+				.sd-bars .axis span { position: absolute; right: 4px; transform: translateY(-50%); white-space: nowrap; font-variant-numeric: tabular-nums; }
 				.sd-bars .plot { position: relative; height: var(--h, 220px); border-bottom: 1px solid var(--border-color); }
 				.sd-bars .gl { position: absolute; left: 0; right: 0; border-top: 1px solid var(--border-color); opacity: .6; }
 				.sd-bars .cols { position: absolute; inset: 0; display: flex; align-items: flex-end; gap: 4%; padding: 0 1%; }
@@ -111,15 +115,14 @@ class SalesDashboard {
 				.sd-bars .bar:hover { opacity: .8; }
 				.sd-bars .bar.none { background: repeating-linear-gradient(45deg, var(--border-color) 0 4px, transparent 4px 8px); height: 100% !important; opacity: .5; }
 				.sd-bars .bar .val { position: absolute; left: 50%; bottom: 100%; transform: translateX(-50%); font-size: 11px; font-weight: 600; white-space: nowrap; color: var(--text-color); padding-bottom: 3px; line-height: 1; }
-				.sd-bars.multi .bar .val, .sd-bars.dense .bar .val { writing-mode: vertical-rl; transform: translateX(-50%) rotate(180deg); padding: 0 0 4px; }
-				.sd-bars .bar .val.in { bottom: auto; top: 6px; color: #fff; padding: 0; }
-				.sd-bars.multi .bar .val.in, .sd-bars.dense .bar .val.in { transform: translateX(-50%) rotate(180deg); }
+				.sd-bars.multi .bar .val, .sd-bars.dense .bar .val { font-size: 10px; letter-spacing: -.02em; }
+				.sd-bars .bar .val.in { bottom: auto; top: 5px; color: #fff; padding: 0; }
 				.sd-bars .xl { display: flex; gap: 4%; padding: 4px 1% 0; font-size: 11px; color: var(--text-muted); }
 				.sd-bars .xl span { flex: 1; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 				.sd-bars.dense .xl span { font-size: 10px; }
 				.sd-leg { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--text-muted); margin-top: 8px; } .sd-leg i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
 				.sd-more { display: flex; justify-content: center; margin-top: 10px; }
-				.sd-donut { display: grid; grid-template-columns: 170px 1fr; gap: 14px; align-items: center; }
+				.sd-donut { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 18px; align-items: center; }
 				.sd-donut svg { width: 170px; height: 170px; display: block; }
 				.sd-donut .lg { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
 				.sd-donut .lg div { display: grid; grid-template-columns: 12px 1fr auto auto; gap: 8px; align-items: center; }
@@ -283,23 +286,40 @@ class SalesDashboard {
 	bars(sel, labels, series, opts = {}) {
 		const $el = this.$body.find(sel);
 		if (!$el.length) return;
-		const H = opts.height || 220, fmtv = opts.fmt || fmtk;
+		const H = opts.height || 220;
 		const all = series.flatMap((s) => s.values).filter((v) => v != null);
-		const vertical_pad = series.length > 1 || labels.length > 8 ? 1.3 : 1.12;
-		const max = Math.max(...all, 1) * vertical_pad;
-		const ticks = 4, grid = Array.from({ length: ticks + 1 }, (_, i) => Math.round((max / ticks) * i));
-		// Raqamlar: bitta seriya va kam ustun — gorizontal tepada; juft seriya
-		// yoki zich ustunlar — vertikal (bir-birining ustiga chiqmaydi).
+		const raw_max = Math.max(...all.map(Math.abs), 1);
+
+		// O'lchov birligi bir marta — grafikning o'ng yuqorisida; raqamlarda
+		// "тыс." takrorlanmaydi (bir-birining ustiga chiqib ketardi).
+		const scale = opts.unit ? 1 : raw_max >= 1e6 ? 1e6 : raw_max >= 10000 ? 1000 : 1;
+		const measure = opts.measure || __("units");
+		const caption = opts.unit || (scale === 1e6 ? `${__("mln")} ${measure}` : scale === 1000 ? `${__("thousands")} ${measure}` : measure);
+		const num = (v) => (v / scale).toLocaleString("ru-RU", { maximumFractionDigits: v && scale > 1 && Math.abs(v / scale) < 100 ? 1 : 0 });
+
+		// "Chiroyli" o'q qadamlari: 0 / 100 / 200 ... (119,3 kabi emas)
 		const vertical = series.length > 1 || labels.length > 8;
+		const head = vertical ? 1.28 : 1.13;
+		const ticks = 4;
+		// Shkala tepasi ma'lumotga qarab (ustunlar baland bo'lsin), belgilar esa
+		// "chiroyli" qadamda (0 / 150 / 300 ...), shu sababdan 119,3 kabi son yo'q.
+		const nice = (x) => { const p = Math.pow(10, Math.floor(Math.log10(x))); const n = x / p; return (n <= 1 ? 1 : n <= 1.5 ? 1.5 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 3 ? 3 : n <= 4 ? 4 : n <= 5 ? 5 : n <= 6 ? 6 : n <= 8 ? 8 : 10) * p; };
+		const max = raw_max * head;
+		const step = nice(max / ticks);
+		const grid = [];
+		for (let g = 0; g <= max + 1e-9; g += step) grid.push(g);
+
 		const cols = labels.map((l, i) => `<div class="grp">${series.map((s) => {
 			const v = s.values[i];
 			if (v == null) return `<div class="bar none" title="${esc(l)}: ${__("no data")}"></div>`;
 			const h = (Math.abs(v) / max) * 100;
-			const inside = vertical ? h > 60 : h > 88;
-			return `<div class="bar" style="--c:${s.color};height:${h}%" title="${esc(s.name)} · ${esc(l)}: ${fmt(v)}"><span class="val ${inside ? "in" : ""}">${fmtv(v)}</span></div>`;
+			const inside = h > 92;
+			return `<div class="bar" style="--c:${s.color};height:${h}%" title="${esc(s.name)} · ${esc(l)}: ${fmt(v)} ${esc(measure)}"><span class="val ${inside ? "in" : ""}">${num(v)}</span></div>`;
 		}).join("")}</div>`).join("");
+
 		$el.html(`<div class="sd-bars ${labels.length > 14 ? "dense" : ""} ${vertical ? "multi" : ""}" style="--h:${H}px">
-			<div class="axis">${grid.map((g) => `<span style="bottom:${(g / max) * 100}%">${fmtv(g)}</span>`).join("")}</div>
+			<div class="cap">${esc(caption)}</div>
+			<div class="axis">${grid.map((g) => `<span style="bottom:${(g / max) * 100}%">${num(g)}</span>`).join("")}</div>
 			<div><div class="plot">${grid.map((g) => `<div class="gl" style="bottom:${(g / max) * 100}%"></div>`).join("")}<div class="cols">${cols}</div></div>
 			<div class="xl">${labels.map((l) => `<span title="${esc(l)}">${esc(l)}</span>`).join("")}</div></div>
 			${series.length > 1 ? `<div class="sd-leg">${series.map((s) => `<span><i style="background:${s.color}"></i>${esc(s.name)}</span>`).join("")}</div>` : ""}
@@ -370,8 +390,8 @@ class SalesDashboard {
 				<div class="sd-panel"><h4>${__("Yearly sales dynamics")}</h4><div class="hint">${__("Click a year to filter")}</div><div class="ch-year" style="margin-top:14px"></div></div>
 				<div class="sd-panel"><h4>${__("Monthly sales dynamics")}</h4><div class="hint">${__("Last 12 months of the selected period")}</div><div class="ch-month" style="margin-top:14px"></div></div>
 				<div class="sd-panel"><h4>${__("Top-15 models")}</h4><div class="hint">${__("Sales leaders for the selected period")}</div>${this.hbars(d.top_models, "model", SD_COLORS[2])}</div>
-				<div class="sd-panel"><h4>${__("Vehicle type share")}</h4><div class="hint">${__("Market structure: PC, SUV, LCV and other types")} · ${__("click to filter")}</div><div class="ch-type" style="margin-top:10px"></div></div>
-				<div class="sd-panel c8"><h4>${__("Top-10 brands")}</h4><div class="hint">${__("Sales leaders for the selected period")}</div>${this.hbars(d.top_brands, "brand", SD_COLORS[0])}</div>
+				<div class="sd-panel c6"><h4>${__("Vehicle type share")}</h4><div class="hint">${__("Market structure: PC, SUV, LCV and other types")} · ${__("click to filter")}</div><div class="ch-type" style="margin-top:10px"></div></div>
+				<div class="sd-panel c6"><h4>${__("Top-10 brands")}</h4><div class="hint">${__("Sales leaders for the selected period")}</div>${this.hbars(d.top_brands, "brand", SD_COLORS[0])}</div>
 			</div>
 			<div class="sd-h">${__("MoM, YoY and change drivers")}</div><div class="sd-hs">${__("Same-period comparison and brand contribution to the change in sales volume")}</div>
 			<div class="sd-grid">
@@ -388,7 +408,7 @@ class SalesDashboard {
 		this.bars(".ch-year", d.yearly.map((y) => y.year), [{ name: __("Sales"), values: d.yearly.map((y) => y.qty), color: SD_COLORS[2] }], {
 			onclick: (i) => { const y = d.yearly[i].year; F.timespan.set_input("custom"); F.from_date.set_input(`${y}-01-01`); F.to_date.set_input(`${y}-12-31`); this.load_sales(); },
 		});
-		this.bars(".ch-month", d.monthly.map((m) => mlabel(m.ym)), [{ name: __("Sales"), values: d.monthly.map((m) => m.qty), color: SD_COLORS[5] }]);
+		this.bars(".ch-month", d.monthly.map((m, i) => mshort(m.ym, i === 0)), [{ name: __("Sales"), values: d.monthly.map((m) => m.qty), color: SD_COLORS[5] }]);
 		this.donut(".ch-type", d.type_share.map((t) => ({ label: t.vtype, value: t.qty })), { onclick: (i) => { if (d.type_share[i].vtype !== "—") F.vtype.set_value(d.type_share[i].vtype); } });
 		this.bars(".ch-yoy", d.yoy.rows.map((r) => moment(r.ym, "YYYY-MM").format("MMM")), [
 			{ name: String(d.yoy.year - 1), values: d.yoy.rows.map((r) => r.prev), color: getComputedStyle(this.$body[0]).getPropertyValue("--sd-bar-prev").trim() || "#a3acc2" },
@@ -474,7 +494,7 @@ class SalesDashboard {
 		if (fo) {
 			const fm = d.focus_monthly.filter((m) => m.qty != null);
 			this.bars(".ch-focus", fm.map((m) => moment(m.ym, "YYYY-MM").format("MMM")), [{ name: __("Sales, units"), values: fm.map((m) => m.qty), color: SD_COLORS[0] }], { height: 150 });
-			this.bars(".ch-focus-share", fm.map((m) => moment(m.ym, "YYYY-MM").format("MMM")), [{ name: __("Market share, %"), values: fm.map((m) => m.share), color: SD_COLORS[3] }], { height: 110, fmt: (v) => v + "%" });
+			this.bars(".ch-focus-share", fm.map((m) => moment(m.ym, "YYYY-MM").format("MMM")), [{ name: __("Market share, %"), values: fm.map((m) => m.share), color: SD_COLORS[3] }], { height: 110, unit: "%" });
 		}
 		this.bars(".ch-seg-months", months12.map((m) => moment(m.ym, "YYYY-MM").format("MMM")), [{ name: __("Sales"), values: months12.map((m) => m.qty), color: SD_COLORS[0] }], { height: 230 });
 		this.donut(".ch-brand-share", d.brand_share.slice(0, 6).map((b) => ({ label: b.label, value: b.qty })).concat(d.brand_share.length > 6 ? [{ label: __("Other"), value: d.brand_share.slice(6).reduce((a, b) => a + b.qty, 0) }] : []));

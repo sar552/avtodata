@@ -211,3 +211,37 @@ Monthly leader,Лидер месяца
 Which model sold the most in each month,Какая модель продавалась лучше в каждом месяце
 Share among selected models,Доля среди выбранных моделей
 Full history,Вся история
+thousands,тыс.
+mln,млн
+Sales Entry,Ввод продаж
+Quick entry,Быстрый ввод
+Total for the date,Всего за дату
+Rows,Строк
+Quantity,Количество
+Select brand,Выберите бренд
+Select model,Выберите модель
+No trim,Без комплектации
+Save,Сохранить
+Brand stays after saving — enter models one after another,Бренд остаётся после сохранения — вводите модели одну за другой
+in the quantity field saves the row,в поле количества сохраняет строку
+clears the row,очищает строку
+Already entered for this date,Уже введено за эту дату
+saving will offer to add to it,при сохранении предложим прибавить
+Row already exists,Такая строка уже есть
+A row for this date and model already exists: {0} units.,За эту дату и модель уже есть строка: {0} шт.
+"Add {0} to it, or create a separate row?","Прибавить {0} к ней или создать отдельную строку?"
+Add to existing,Прибавить к существующей
+Create separate row,Создать отдельную строку
+Row added,Строка добавлена
+Row updated,Строка обновлена
+Row deleted,Строка удалена
+Delete this row?,Удалить эту строку?
+Edit quantity,Изменить количество
+No rows for this date yet — enter the first one above,За эту дату строк ещё нет — введите первую выше
+Showing last {0} of {1} rows,Показаны последние {0} из {1} строк
+Select a date,Выберите дату
+Select a model,Выберите модель
+"Date, brand and model are required.","Укажите дату, бренд и модель."
+Delete,Удалить
+Rows for {0},Строки за {0}
+Click to edit,Нажмите чтобы изменить
