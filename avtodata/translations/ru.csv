@@ -245,3 +245,46 @@ Select a model,Выберите модель
 Delete,Удалить
 Rows for {0},Строки за {0}
 Click to edit,Нажмите чтобы изменить
+Model price range,Диапазон цен моделей
+From the most affordable to the most expensive trim,От самой доступной до самой дорогой комплектации
+From the most affordable to the most expensive trim as of {0},От самой доступной до самой дорогой комплектации на {0}
+Currency and VAT,Валюта и НДС
+with VAT,С НДС
+without VAT,Без НДС
+Minimum — maximum,Минимум — максимум
+Average price,Средняя цена
+Best promo,Лучшая акция
+No data,Нет данных
+No prices entered yet,Цены ещё не внесены
+add the first price,внести первую цену
+trims,компл.
+Scale,Шкала
+The range covers active trims with a price.,Диапазон охватывает активные комплектации с указанной ценой.
+Exact prices and trim coverage,Точные цены и покрытие комплектаций
+Trims with a price,Комплектаций с ценой
+Cheapest,Самая доступная
+Most expensive,Самая дорогая
+Minimum,Минимум
+Maximum,Максимум
+Price date,Дата цены
+Trim Price,Цена комплектации
+Trim Prices,Цены комплектаций
+Valid From,Действует с
+Price,Цена
+Includes VAT,Цена с НДС
+"VAT, %","НДС, %"
+Promotion,Акция
+Promo Price,Цена по акции
+Promo Until,Акция до
+Price must be greater than zero.,Цена должна быть больше нуля.
+VAT percent must be between 0 and 100.,НДС должен быть от 0 до 100.
+Promo price must be lower than the regular price.,Цена по акции должна быть ниже обычной.
+"A price for this trim, date and currency already exists.","Цена для этой комплектации, даты и валюты уже есть."
+top models by sales,топ моделей по продажам
+click a month to filter,нажмите на месяц для фильтра
+click to focus,нажмите чтобы сменить фокус
+No price entered,Цена не внесена
+Could not draw this block,Не удалось построить этот блок
+Could not load data,Не удалось загрузить данные
+VAT,НДС
+{0} prices in other currencies are not shown.,{0} цен в другой валюте не показаны.

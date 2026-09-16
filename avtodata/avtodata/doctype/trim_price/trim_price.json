@@ -1,0 +1,147 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-09-16 10:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "trim",
+  "model",
+  "valid_from",
+  "column_break_main",
+  "currency",
+  "amount",
+  "includes_vat",
+  "vat_percent",
+  "section_promo",
+  "promo_amount",
+  "promo_until",
+  "column_break_promo",
+  "source_reference",
+  "is_active"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "options": "TP-.#####"
+  },
+  {
+   "fieldname": "trim",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Trim",
+   "options": "Trim",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "trim.model",
+   "fieldname": "model",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Model",
+   "options": "Model",
+   "read_only": 1
+  },
+  {
+   "default": "Today",
+   "description": "Narx shu sanadan kuchga kiradi",
+   "fieldname": "valid_from",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Valid From",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_main",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "UZS",
+   "fieldname": "currency",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Currency",
+   "options": "Currency",
+   "reqd": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Price",
+   "options": "currency",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "includes_vat",
+   "fieldtype": "Check",
+   "label": "Includes VAT"
+  },
+  {
+   "default": "12",
+   "fieldname": "vat_percent",
+   "fieldtype": "Float",
+   "label": "VAT, %",
+   "precision": "2"
+  },
+  {
+   "fieldname": "section_promo",
+   "fieldtype": "Section Break",
+   "label": "Promotion"
+  },
+  {
+   "fieldname": "promo_amount",
+   "fieldtype": "Currency",
+   "label": "Promo Price",
+   "options": "currency"
+  },
+  {
+   "fieldname": "promo_until",
+   "fieldtype": "Date",
+   "label": "Promo Until"
+  },
+  {
+   "fieldname": "column_break_promo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "source_reference",
+   "fieldtype": "Data",
+   "label": "Source Reference"
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_standard_filter": 1,
+   "label": "Is Active"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-09-16 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "AvtoData",
+ "name": "Trim Price",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "AvtoData Admin", "share": 1, "write": 1},
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "AvtoData Dispatcher", "share": 1, "write": 1},
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "AvtoData Reviewer", "share": 1},
+  {"email": 1, "export": 1, "print": 1, "read": 1, "report": 1, "role": "AvtoData Viewer", "share": 1}
+ ],
+ "sort_field": "valid_from",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "trim"
+}

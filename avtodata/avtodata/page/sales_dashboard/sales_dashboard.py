@@ -7,7 +7,7 @@ shuning uchun bitta SQL + Python'da guruhlash yetarli.
 from collections import defaultdict
 
 import frappe
-from frappe.utils import cint
+from frappe.utils import cint, flt, getdate, nowdate
 
 TIER_ORDER = ["luxury", "premium", "mass_market", "budget", "unset"]
 
@@ -292,11 +292,12 @@ def get_segment_data(filters=None):
 	prev_size = sum(r.qty for r in S_prev)
 	yoy_size = sum(r.qty for r in S_yoy)
 
-	by_model = defaultdict(lambda: {"qty": 0, "label": "", "brand": "", "image": ""})
+	by_model = defaultdict(lambda: {"qty": 0, "label": "", "brand": "", "image": "", "logo": ""})
 	for r in S:
 		bm = by_model[r.model]
 		bm["qty"] += r.qty
 		bm["label"], bm["brand"], bm["image"] = r.model_label, r.brand_label, r.image or ""
+		bm["logo"] = r.logo or ""
 	ranking = sorted(({"model": k, **v} for k, v in by_model.items()), key=lambda x: -x["qty"])
 	leader = ranking[0] if ranking else None
 
@@ -319,9 +320,9 @@ def get_segment_data(filters=None):
 	f_yoy = sum(focus_by_ym.get(m, 0) for m in yoy_period)
 	focus_info = None
 	if focus:
-		fm = by_model.get(focus) or {"label": focus, "brand": "", "image": ""}
+		fm = by_model.get(focus) or {"label": focus, "brand": "", "image": "", "logo": ""}
 		focus_info = {
-			"model": focus, "label": fm["label"], "brand": fm["brand"], "image": fm["image"],
+			"model": focus, "label": fm["label"], "brand": fm["brand"], "image": fm["image"], "logo": fm.get("logo") or "",
 			"period_qty": f_period, "share": round(f_period / size * 100, 1) if size else 0,
 			"last": focus_by_ym.get(last, 0), "mom": _pct(focus_by_ym.get(last, 0), focus_by_ym.get(prev_m, 0)),
 			"yoy": _pct(f_period, f_yoy),
@@ -475,3 +476,119 @@ def search_models(txt=None, exclude=None, segment=None):
 	)
 	exclude = set(exclude or [])
 	return [r for r in rows if r.name not in exclude]
+
+
+# ----------------------------------------------------------- PRICE RANGES
+def _vat_adjust(amount, includes_vat, vat_percent, want_vat):
+	"""Narxni so'ralgan QQS rejimiga keltiradi (valyuta konvertatsiya qilinmaydi)."""
+	rate = 1 + flt(vat_percent) / 100
+	amount = flt(amount)
+	if want_vat and not cint(includes_vat):
+		return amount * rate
+	if not want_vat and cint(includes_vat):
+		return amount / rate
+	return amount
+
+
+@frappe.whitelist()
+def get_price_ranges(models=None, currency=None, with_vat=1, as_on=None, limit=8):
+	"""Model narx diapazoni: har modelning faol komplektatsiyalari bo'yicha
+	eng arzon—eng qimmat, o'rtacha va eng yaxshi aksiya narxi.
+
+	Har komplektatsiya uchun berilgan sanaga amal qiladigan oxirgi narx
+	olinadi (valid_from <= as_on). Valyutalar aralashtirilmaydi — tanlangan
+	valyutadagi narxlargina hisobga olinadi.
+	"""
+	if isinstance(models, str):
+		models = frappe.parse_json(models)
+	models = [m for m in (models or []) if m][: cint(limit) or 8]
+	as_on = getdate(as_on) if as_on else getdate(nowdate())
+	want_vat = cint(with_vat)
+
+	# Asosiy valyuta — narxlari eng ko'p bo'lgani (tanlash kerak emas)
+	cur_rows = frappe.db.sql(
+		"""select currency, count(*) as n from `tabTrim Price`
+		   where is_active = 1 group by currency order by n desc""",
+		as_dict=True,
+	)
+	currencies = [r.currency for r in cur_rows]
+	labels = {}
+	if models:
+		for m in frappe.get_all("Model", filters={"name": ["in", models]}, fields=["name", "model_name", "brand"]):
+			labels[m.name] = m
+
+	if not models or not currencies:
+		return {
+			"rows": [{"model": m, "label": (labels.get(m) or {}).get("model_name") or m,
+			          "brand": (labels.get(m) or {}).get("brand") or "", "no_data": True} for m in models],
+			"currencies": currencies, "currency": currency, "with_vat": want_vat,
+			"as_on": str(as_on), "empty": not currencies, "other_prices": 0, "vat_mixed": False,
+		}
+
+	if currency not in currencies:
+		currency = currencies[0]
+	other_prices = sum(r.n for r in cur_rows if r.currency != currency)
+	# QQS rejimi aralashmi? (ba'zi narx QQS bilan, ba'zisi QQSsiz kiritilgan)
+	vat_modes = frappe.db.sql(
+		"select distinct includes_vat from `tabTrim Price` where is_active = 1 and currency = %s",
+		(currency,),
+	)
+	vat_mixed = len(vat_modes) > 1
+
+	price_rows = frappe.db.sql(
+		"""
+		select tp.trim, tp.model, tp.amount, tp.includes_vat, tp.vat_percent,
+		       tp.promo_amount, tp.promo_until, tp.valid_from
+		from `tabTrim Price` tp
+		inner join `tabTrim` t on t.name = tp.trim and t.is_active = 1
+		where tp.is_active = 1 and tp.currency = %(cur)s and tp.valid_from <= %(as_on)s
+		  and tp.model in %(models)s
+		order by tp.trim asc, tp.valid_from desc, tp.modified desc
+		""",
+		{"cur": currency, "as_on": as_on, "models": models},
+		as_dict=True,
+	)
+
+	latest = {}
+	for r in price_rows:
+		if r.trim not in latest:
+			latest[r.trim] = r
+
+	trim_counts = defaultdict(int)
+	for t in frappe.get_all("Trim", filters={"model": ["in", models], "is_active": 1}, fields=["name", "model"]):
+		trim_counts[t.model] += 1
+
+	by_model = defaultdict(list)
+	for trim, r in latest.items():
+		price = _vat_adjust(r.amount, r.includes_vat, r.vat_percent, want_vat)
+		promo = None
+		if flt(r.promo_amount) and (not r.promo_until or getdate(r.promo_until) >= as_on):
+			promo = _vat_adjust(r.promo_amount, r.includes_vat, r.vat_percent, want_vat)
+		by_model[r.model].append({"trim": trim, "price": price, "promo": promo, "valid_from": str(r.valid_from)})
+
+	rows = []
+	for m in models:
+		info = labels.get(m) or {}
+		items = sorted(by_model.get(m, []), key=lambda x: x["price"])
+		row = {
+			"model": m, "label": info.get("model_name") or m, "brand": info.get("brand") or "",
+			"trims_total": trim_counts.get(m, 0), "trims_priced": len(items), "items": items,
+		}
+		if items:
+			promos = [x["promo"] for x in items if x["promo"]]
+			row.update({
+				"min": round(items[0]["price"]),
+				"max": round(items[-1]["price"]),
+				"avg": round(sum(x["price"] for x in items) / len(items)),
+				"promo": round(min(promos)) if promos else None,
+				"min_trim": items[0]["trim"], "max_trim": items[-1]["trim"],
+				"last_date": max(x["valid_from"] for x in items),
+			})
+		else:
+			row["no_data"] = True
+		rows.append(row)
+
+	return {
+		"rows": rows, "currencies": currencies, "currency": currency,
+		"with_vat": want_vat, "as_on": str(as_on), "other_prices": other_prices, "vat_mixed": vat_mixed,
+	}

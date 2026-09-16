@@ -350,6 +350,13 @@ class ModelDashboard {
 		}
 	}
 
+	// Rasm yuklanmasa — o'rinbosar bilan almashtiramiz (private/o'chgan fayl)
+	fix_broken_images() {
+		this.$body.find("img[data-fb]").on("error", function () {
+			$(this).replaceWith(`<span>${frappe.utils.escape_html($(this).attr("data-fb") || "")}</span>`);
+		});
+	}
+
 	model_count(brand) {
 		return this.vehicles.filter((v) => v.brand === brand).length;
 	}
@@ -398,7 +405,7 @@ class ModelDashboard {
 				rows
 					.map((b) => {
 						const logo = b.logo
-							? `<img src="${esc(b.logo)}" loading="lazy">`
+							? `<img src="${esc(b.logo)}" loading="lazy" data-fb="${esc((b.brand_name || "?")[0])}">`
 							: esc((b.brand_name || "?")[0]);
 						const count = this.model_count(b.name);
 						const tier_line = b.market_tier
@@ -429,6 +436,7 @@ class ModelDashboard {
 			if (me.active_tier) $(this).addClass("active");
 			draw();
 		});
+		this.fix_broken_images();
 		this.$body.on("click.md", ".md-brand-card", function () {
 			frappe.set_route("model-dashboard", $(this).data("brand"));
 		});
@@ -468,7 +476,7 @@ class ModelDashboard {
 			this.$body.find(".md-grid").html(
 				rows
 					.map((v) => {
-						const image = v.image ? `<img src="${esc(v.image)}" loading="lazy">` : "🚗";
+						const image = v.image ? `<img src="${esc(v.image)}" loading="lazy" data-fb="🚗">` : "🚗";
 						const meta = [v.vehicle_segment, v.vehicle_class, v.fuel_type]
 							.filter(Boolean)
 							.map(esc)
@@ -495,6 +503,7 @@ class ModelDashboard {
 		const me = this;
 		this.$body.off(".md").on("input.md", ".md-search", draw);
 		this.$body.on("click.md", ".md-back", () => frappe.set_route("model-dashboard"));
+		this.fix_broken_images();
 		this.$body.on("click.md", ".md-model-card", function () {
 			frappe.set_route("model-dashboard", me.active_brand, $(this).data("name"));
 		});
@@ -520,7 +529,7 @@ class ModelDashboard {
 				tier_text += ` · ${__("Inherited from brand")}`;
 			}
 		}
-		const image = v.image ? `<img src="${esc(v.image)}">` : "🚗";
+		const image = v.image ? `<img src="${esc(v.image)}" data-fb="🚗">` : "🚗";
 		const tile = (label, value, wide) => `
 			<div class="md-tile ${wide ? "md-tile-wide" : ""}">
 				<div class="md-tile-label">${label}</div>
@@ -560,6 +569,7 @@ class ModelDashboard {
 			${trim_rows}
 		`);
 
+		this.fix_broken_images();
 		this.$body.off(".md").on("click.md", ".md-back", () => {
 			frappe.set_route("model-dashboard", v.brand);
 		});
