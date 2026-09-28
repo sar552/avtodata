@@ -265,13 +265,89 @@ class ModelDashboard {
 					font-weight: 700;
 					margin: 6px 0 2px;
 				}
-				.md-trim-row {
+				.md-toolbar .md-dash-btn {
+					margin-left: auto;
+				}
+				.md-trims-head {
+					display: flex;
+					justify-content: space-between;
+					align-items: flex-end;
+					gap: 12px;
+					flex-wrap: wrap;
+					margin-bottom: 10px;
+				}
+				.md-price-range {
+					font-size: var(--text-md);
+					font-weight: 600;
+				}
+				.md-price-range small {
+					color: var(--text-muted);
+					font-weight: 400;
+				}
+				.md-trim-table-wrap {
 					border: 1px solid var(--border-color);
 					border-radius: var(--border-radius-lg);
-					padding: 14px 18px;
-					margin-top: 10px;
 					background: var(--card-bg);
+					overflow-x: auto;
+				}
+				.md-trim-table {
+					width: 100%;
+					border-collapse: collapse;
+					font-size: 14px;
+				}
+				.md-trim-table th {
+					text-align: left;
+					font-size: 12px;
+					letter-spacing: 0.05em;
+					text-transform: uppercase;
+					color: var(--text-muted);
 					font-weight: 600;
+					padding: 10px 16px;
+					border-bottom: 1px solid var(--border-color);
+					white-space: nowrap;
+				}
+				.md-trim-table td {
+					padding: 12px 16px;
+					border-bottom: 1px solid var(--border-color);
+					vertical-align: middle;
+				}
+				.md-trim-table tr:last-child td {
+					border-bottom: 0;
+				}
+				.md-trim-table .num {
+					text-align: right;
+					font-variant-numeric: tabular-nums;
+					white-space: nowrap;
+				}
+				.md-trim-table .md-trim-name {
+					font-weight: 600;
+				}
+				.md-trim-table .md-main-price {
+					font-weight: 700;
+					font-size: 15px;
+				}
+				.md-trim-table .md-cur {
+					color: var(--text-muted);
+					font-size: 12px;
+					margin-left: 3px;
+				}
+				.md-trim-table .md-muted {
+					color: var(--text-muted);
+				}
+				.md-trim-table tr.md-click {
+					cursor: pointer;
+				}
+				.md-trim-table tr.md-click:hover td {
+					background: var(--bg-color);
+				}
+				.md-vat-badge {
+					display: inline-block;
+					padding: 1px 8px;
+					border-radius: 999px;
+					border: 1px solid var(--border-color);
+					font-size: 12px;
+					color: var(--text-muted);
+					white-space: nowrap;
 				}
 			</style>
 			<div class="md-body"><div class="md-empty">${__("Loading")}...</div></div>
@@ -316,7 +392,7 @@ class ModelDashboard {
 				method: "frappe.client.get_list",
 				args: {
 					doctype: "Trim",
-					fields: ["trim_name", "model"],
+					fields: ["name", "trim_name", "model"],
 					filters: { is_active: 1 },
 					order_by: "trim_name asc",
 					limit_page_length: 0,
@@ -326,7 +402,9 @@ class ModelDashboard {
 			this.brands = brands_r.message || [];
 			this.vehicles = models_r.message || [];
 			this.trims_by_model = {};
+			this.trim_docs_by_model = {};
 			for (const t of trims_r.message || []) {
+				(this.trim_docs_by_model[t.model] = this.trim_docs_by_model[t.model] || []).push(t);
 				(this.trims_by_model[t.model] = this.trims_by_model[t.model] || []).push(
 					t.trim_name
 				);
@@ -537,14 +615,15 @@ class ModelDashboard {
 			</div>
 		`;
 
-		const trim_rows = trims.length
-			? trims.map((t) => `<div class="md-trim-row">${esc(t)}</div>`).join("")
-			: `<div class="md-empty">${__("No records")}</div>`;
+		const segment = v.vehicle_segment && v.vehicle_class ? `${v.vehicle_segment}-${v.vehicle_class}` : v.vehicle_segment || "";
 
 		this.$body.html(`
 			<div class="md-toolbar">
 				<span class="md-back">← ${esc(brand_label)}</span>
 				<span class="md-crumb-count">${esc(brand_label)} / ${esc(v.model_name || v.name)}</span>
+				<button class="btn btn-primary btn-sm md-dash-btn" ${segment ? "" : `disabled title="${__("Set the vehicle segment of this model first")}"`}>
+					${frappe.utils.icon("dashboard", "sm")} ${__("View in dashboard")}
+				</button>
 			</div>
 			<div class="md-hero">
 				<div class="md-hero-img">${image}</div>
@@ -564,14 +643,143 @@ class ModelDashboard {
 					</div>
 				</div>
 			</div>
-			<div class="md-section-title">${__("Trims")}</div>
-			<div class="md-crumb-count">${trims.length} ${__("records")}</div>
-			${trim_rows}
+			<div class="md-trims-head">
+				<div>
+					<div class="md-section-title">${__("Trims and prices")}</div>
+					<div class="md-crumb-count">${trims.length} ${__("records")}</div>
+				</div>
+				<div class="md-price-range"></div>
+			</div>
+			<div class="md-trims">${trims.length ? `<div class="md-empty">${__("Loading")}...</div>` : `<div class="md-empty">${__("No records")}</div>`}</div>
 		`);
 
 		this.fix_broken_images();
 		this.$body.off(".md").on("click.md", ".md-back", () => {
 			frappe.set_route("model-dashboard", v.brand);
+		});
+		// Segment dashboardi shu model segmenti va fokus-modeli bilan ochiladi
+		this.$body.on("click.md", ".md-dash-btn", () => {
+			if (!segment) return;
+			frappe.route_options = { segment, focus_model: v.name };
+			frappe.set_route("sales-dashboard", "segments");
+		});
+		if (trims.length) this.load_trim_prices(v);
+	}
+
+	// Har komplektatsiyaning amaldagi narxi: bugungacha kuchga kirgan eng
+	// oxirgi faol narx (har valyuta alohida). QQS bilan va QQSsiz ikkalasi ko'rsatiladi.
+	load_trim_prices(v) {
+		const model = v.name;
+		frappe
+			.call({
+				method: "frappe.client.get_list",
+				args: {
+					doctype: "Trim Price",
+					fields: ["name", "trim", "currency", "amount", "includes_vat", "vat_percent", "valid_from"],
+					filters: { model, is_active: 1 },
+					order_by: "valid_from desc, modified desc",
+					limit_page_length: 0,
+				},
+			})
+			.then((r) => {
+				if (this.active_model !== model) return; // foydalanuvchi boshqa sahifaga o'tib ketgan
+				this.render_trim_prices(v, r.message || []);
+			})
+			.catch(() => {
+				this.$body.find(".md-trims").html(`<div class="md-empty">${__("Could not load data")}</div>`);
+			});
+	}
+
+	render_trim_prices(v, prices) {
+		const esc = frappe.utils.escape_html;
+		const today = frappe.datetime.get_today();
+		const trims = this.trim_docs_by_model[v.name] || [];
+
+		// trim -> valyuta -> amaldagi narx (kelajakdagi narx faqat boshqasi bo'lmasa)
+		const current = {}, history = {};
+		for (const p of prices) {
+			history[p.trim] = (history[p.trim] || 0) + 1;
+			const by_cur = (current[p.trim] = current[p.trim] || {});
+			// Ro'yxat yangidan eskiga: saqlangani hali kuchga kirmagan bo'lsa, almashtirib boramiz —
+			// natijada kuchdagi eng oxirgi narx, u bo'lmasa eng yaqin kelajakdagi narx qoladi.
+			const have = by_cur[p.currency];
+			if (!have || have.valid_from > today) by_cur[p.currency] = p;
+		}
+
+		const rate = (p) => 1 + (flt(p.vat_percent) || 0) / 100;
+		const net = (p) => (cint(p.includes_vat) ? flt(p.amount) / rate(p) : flt(p.amount));
+		const gross = (p) => (cint(p.includes_vat) ? flt(p.amount) : flt(p.amount) * rate(p));
+		const money = (n, cur) => `${format_number(Math.round(n), null, 0)}<span class="md-cur">${esc(cur)}</span>`;
+		const can_create = frappe.model.can_create("Trim Price");
+
+		const rows = [];
+		trims.forEach((t) => {
+			const list = Object.values(current[t.name] || {});
+			if (!list.length) {
+				rows.push({ t, p: null, sort: Infinity });
+				return;
+			}
+			list.forEach((p) => rows.push({ t, p, sort: gross(p) }));
+		});
+		// Arzondan qimmatga; narxi yo'qlar oxirida
+		rows.sort((a, b) => a.sort - b.sort || a.t.trim_name.localeCompare(b.t.trim_name));
+
+		// Yuqorida diapazon (asosiy valyuta bo'yicha, QQS bilan)
+		const priced = rows.filter((x) => x.p);
+		if (priced.length) {
+			const cur = priced[0].p.currency, same = priced.filter((x) => x.p.currency === cur).map((x) => gross(x.p));
+			const lo = Math.min(...same), hi = Math.max(...same);
+			this.$body.find(".md-price-range").html(
+				`<small>${__("Price range, with VAT")}:</small> ${lo === hi ? money(lo, cur) : `${money(lo, cur)} — ${money(hi, cur)}`}`
+			);
+		}
+
+		const body = rows
+			.map(({ t, p }, i) => {
+				if (!p) {
+					return `<tr>
+						<td class="md-muted">${i + 1}</td>
+						<td class="md-trim-name">${esc(t.trim_name)}</td>
+						<td colspan="5" class="md-muted">${__("No price entered")}${
+							can_create ? ` · <a href="#" class="md-add-price" data-trim="${esc(t.name)}">${__("add price")}</a>` : ""
+						}</td>
+					</tr>`;
+				}
+				const vat = `${cint(p.includes_vat) ? __("incl.") : __("excl.")} ${flt(p.vat_percent)}%`;
+				const future = p.valid_from > today;
+				return `<tr class="md-click" data-price="${esc(p.name)}" title="${__("Open price")}">
+					<td class="md-muted">${i + 1}</td>
+					<td class="md-trim-name">${esc(t.trim_name)}</td>
+					<td class="num md-main-price">${money(gross(p), p.currency)}</td>
+					<td class="num">${money(net(p), p.currency)}</td>
+					<td><span class="md-vat-badge">${__("VAT")} ${esc(vat)}</span></td>
+					<td class="num ${future ? "" : "md-muted"}">${frappe.datetime.str_to_user(p.valid_from)}${future ? ` · ${__("upcoming")}` : ""}</td>
+					<td class="num md-muted">${history[t.name] || 0}</td>
+				</tr>`;
+			})
+			.join("");
+
+		this.$body.find(".md-trims").html(`
+			<div class="md-trim-table-wrap"><table class="md-trim-table">
+				<thead><tr>
+					<th>#</th>
+					<th>${__("Trim")}</th>
+					<th class="num">${__("Price with VAT")}</th>
+					<th class="num">${__("Price without VAT")}</th>
+					<th>${__("VAT")}</th>
+					<th class="num">${__("Valid from")}</th>
+					<th class="num">${__("Price records")}</th>
+				</tr></thead>
+				<tbody>${body}</tbody>
+			</table></div>
+		`);
+
+		this.$body.find(".md-trims tr[data-price]").on("click", (e) => {
+			frappe.set_route("Form", "Trim Price", $(e.currentTarget).attr("data-price"));
+		});
+		this.$body.find(".md-add-price").on("click", (e) => {
+			e.preventDefault();
+			frappe.new_doc("Trim Price", { trim: $(e.currentTarget).attr("data-trim"), model: v.name });
 		});
 	}
 }

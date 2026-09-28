@@ -288,3 +288,33 @@ Could not draw this block,Не удалось построить этот бло
 Could not load data,Не удалось загрузить данные
 VAT,НДС
 {0} prices in other currencies are not shown.,{0} цен в другой валюте не показаны.
+Brand share,Доля брендов
+Market structure by brands,Структура рынка по брендам
+vehicles,автомобилей
+Not set,Не указан
+Passenger cars,Легковые
+Crossovers / SUV,Кроссоверы / SUV
+Light commercial,Лёгкие коммерческие
+Minivans,Минивэны
+Pickups,Пикапы
+View in dashboard,Смотреть в дашборде
+Set the vehicle segment of this model first,Сначала укажите тип автомобиля для этой модели
+Trims and prices,Комплектации и цены
+"Price range, with VAT","Диапазон цен, с НДС"
+add price,добавить цену
+incl.,вкл.
+excl.,без
+Open price,Открыть цену
+upcoming,будущая
+Price with VAT,Цена с НДС
+Price without VAT,Цена без НДС
+Valid from,Действует с
+Price records,Записей цен
+Showing models of segment,Показаны модели сегмента
+same as the base model,как у базовой модели
+Showing all segments,Показаны все сегменты
+Show all segments,Показать все сегменты
+Back to segment,Вернуться к сегменту
+other segment,другой сегмент
+"{0} looks incomplete: only {1} entries, {2} units (a typical month has about {3}). ""Last month"", MoM, rating and some percentages are computed from this month. Check the entries or wait until the month is fully entered.","{0} выглядит неполным: всего {1} записей, {2} шт. (обычно в месяце около {3}). «Последний месяц», MoM, рейтинг и часть процентов считаются по этому месяцу. Проверьте записи или дождитесь полного ввода месяца."
+Show entries,Показать записи

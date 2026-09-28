@@ -13,8 +13,6 @@ class TrimPrice(Document):
 			frappe.throw(_("Price must be greater than zero."))
 		if not 0 <= flt(self.vat_percent) < 100:
 			frappe.throw(_("VAT percent must be between 0 and 100."))
-		if flt(self.promo_amount) and flt(self.promo_amount) >= flt(self.amount):
-			frappe.throw(_("Promo price must be lower than the regular price."))
 		self._check_duplicate()
 
 	def _check_duplicate(self):

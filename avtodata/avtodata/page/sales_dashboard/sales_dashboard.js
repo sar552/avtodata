@@ -13,43 +13,44 @@ frappe.pages["sales-dashboard"].on_page_show = function (wrapper) {
 };
 
 const SD_COLORS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#4a3aa7", "#e34948"];
-// Avtomobil turlari uchun belgilar — ochiq piktogramma to'plamlaridan:
-// sedan / truck / van-shuttle / truck-pickup — Font Awesome Free 6 (CC BY 4.0,
-// fontawesome.com), car-suv — Tabler Icons (MIT, tabler.io/icons).
-const VEHICLE_ICONS = {
-	sedan: { vb: "0 0 640 512", d: `<path d="M171.3 96L224 96l0 96-112.7 0 30.4-75.9C146.5 104 158.2 96 171.3 96zM272 192l0-96 81.2 0c9.7 0 18.9 4.4 25 12l67.2 84L272 192zm256.2 1L428.2 68c-18.2-22.8-45.8-36-75-36L171.3 32c-39.3 0-74.6 23.9-89.1 60.3L40.6 196.4C16.8 205.8 0 228.9 0 256L0 368c0 17.7 14.3 32 32 32l33.3 0c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80l130.7 0c7.6 45.4 47.1 80 94.7 80s87.1-34.6 94.7-80l33.3 0c17.7 0 32-14.3 32-32l0-48c0-65.2-48.8-119-111.8-127zM434.7 368a48 48 0 1 1 90.5 32 48 48 0 1 1 -90.5-32zM160 336a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>` },
-	suv: { vb: "0 0 24 24", d: `<path d="M7 14a3 3 0 1 1 -3 3l.005 -.176a3 3 0 0 1 2.995 -2.824m11 0a3 3 0 1 1 -3 3l.005 -.176a3 3 0 0 1 2.995 -2.824m-11 2a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m11 0a1 1 0 1 0 0 2a1 1 0 0 0 0 -2m-3.562 -12a3 3 0 0 1 2.91 2.272l.433 1.728h2.219a3 3 0 0 1 2.995 2.824l.005 .176v3.02l-.01 .117a1 1 0 0 1 -.286 .575l-.107 .091l-.07 .049l-.076 .042l-.106 .046l-.017 .005l-.047 .016l-.108 .025l-.118 .013l-.08 .002l-.122 -.012l-.148 -.033l-.063 -.022a1 1 0 0 1 -.362 -.24l-.08 -.094a4 4 0 0 0 -3.2 -1.6a4 4 0 0 0 -3.2 1.6a1 1 0 0 1 -.8 .4h-3a1 1 0 0 1 -.8 -.4a3.998 3.998 0 0 0 -6.402 .002a1 1 0 1 1 -1.602 -1.198c.493 -.66 1.11 -1.2 1.804 -1.602v-2.792a1 1 0 0 1 .06 -.35l.042 -.1l2.004 -4.007a1 1 0 0 1 .894 -.553zm-12.438 2a1 1 0 0 1 1 1v4a1 1 0 0 1 -2 0v-4a1 1 0 0 1 1 -1m12.438 0h-3.438v2h4.718l-.31 -1.243a1 1 0 0 0 -.97 -.757m-5.438 0h-1.382l-1.001 2h2.383z" />` },
-	van: { vb: "0 0 640 512", d: `<path d="M48 0C21.5 0 0 21.5 0 48L0 368c0 26.5 21.5 48 48 48l16 0c0 53 43 96 96 96s96-43 96-96l128 0c0 53 43 96 96 96s96-43 96-96l32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64 0-32 0-18.7c0-17-6.7-33.3-18.7-45.3L512 114.7c-12-12-28.3-18.7-45.3-18.7L416 96l0-48c0-26.5-21.5-48-48-48L48 0zM416 160l50.7 0L544 237.3l0 18.7-128 0 0-96zM112 416a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm368-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>` },
-	minivan: { vb: "0 0 640 512", d: `<path d="M64 104l0 88 96 0 0-96L72 96c-4.4 0-8 3.6-8 8zm482 88L465.1 96 384 96l0 96 162 0zm-226 0l0-96-96 0 0 96 96 0zM592 384l-16 0c0 53-43 96-96 96s-96-43-96-96l-128 0c0 53-43 96-96 96s-96-43-96-96l-16 0c-26.5 0-48-21.5-48-48L0 104C0 64.2 32.2 32 72 32l120 0 160 0 113.1 0c18.9 0 36.8 8.3 49 22.8L625 186.5c9.7 11.5 15 26.1 15 41.2L640 336c0 26.5-21.5 48-48 48zm-64 0a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM160 432a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/>` },
-	pickup: { vb: "0 0 640 512", d: `<path d="M368.6 96l76.8 96L288 192l0-96 80.6 0zM224 80l0 112L64 192c-17.7 0-32 14.3-32 32l0 64c-17.7 0-32 14.3-32 32s14.3 32 32 32l33.1 0c-.7 5.2-1.1 10.6-1.1 16c0 61.9 50.1 112 112 112s112-50.1 112-112c0-5.4-.4-10.8-1.1-16l66.3 0c-.7 5.2-1.1 10.6-1.1 16c0 61.9 50.1 112 112 112s112-50.1 112-112c0-5.4-.4-10.8-1.1-16l33.1 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c0-17.7-14.3-32-32-32l-48.6 0L418.6 56c-12.1-15.2-30.5-24-50-24L272 32c-26.5 0-48 21.5-48 48zm0 288a48 48 0 1 1 -96 0 48 48 0 1 1 96 0zm288 0a48 48 0 1 1 -96 0 48 48 0 1 1 96 0z"/>` },
+// Avtomobil turlari: har turning o'z surati (public/images/vehicle_types).
+// Kalit Vehicle Segment nomidan aniqlanadi (PC, SUV, LCV, MPV, Pick Up ...).
+const VT_IMG = "/assets/avtodata/images/vehicle_types/";
+const VEHICLE_TYPES = {
+	sedan: { img: "sedan.webp", label: () => __("Passenger cars") },
+	suv: { img: "suv.webp", label: () => __("Crossovers / SUV") },
+	van: { img: "van.webp", label: () => __("Light commercial") },
+	minivan: { img: "minivan.webp", label: () => __("Minivans") },
+	pickup: { img: "pickup.webp", label: () => __("Pickups") },
 };
 
-const vehicle_icon_key = (type) => {
-	const t = String(type || "").toUpperCase();
+const vehicle_type_key = (type) => {
+	const t = String(type || "").toUpperCase().trim();
+	if (!t || t === "—") return "unset";
 	if (/PICK/.test(t)) return "pickup";
-	if (/LCV|VAN|FURGON|TRUCK/.test(t)) return "van";
+	// MINIVAN'da ham "VAN" bor — shuning uchun avval minivan tekshiriladi
 	if (/MPV|MINIVAN|MICROVAN|SHUTTLE/.test(t)) return "minivan";
+	if (/LCV|VAN|FURGON|TRUCK/.test(t)) return "van";
 	if (/SUV|CROSS|OFFROAD|4WD/.test(t)) return "suv";
-	return "sedan";
+	if (/^PC$|PASSENGER|SEDAN|HATCH/.test(t)) return "sedan";
+	return "other";
 };
 
-const vehicle_icon_box = (type) => {
-	const ic = VEHICLE_ICONS[vehicle_icon_key(type)];
-	const [, , w, h] = ic.vb.split(" ").map(Number);
-	return { ic, w, h };
+const initial = (s) => String(s || "?").trim().charAt(0).toUpperCase() || "?";
+
+// Model surati; yo'q yoki yuklanmasa — model turining umumiy surati (xira)
+const model_img = (src, vtype) => {
+	const vt = VEHICLE_TYPES[vehicle_type_key(vtype)] || VEHICLE_TYPES.sedan;
+	const generic = `<img class="sd-model-img generic" src="${VT_IMG}${vt.img}" alt="">`;
+	return src ? `<img class="sd-model-img" src="${esc(src)}" alt="" loading="lazy" data-fbhtml="${esc(generic)}">` : generic;
 };
 
-// Legenda va boshqa joylar uchun mustaqil <svg>
-const vehicle_icon_svg = (type, size, color) => {
-	const { ic, w, h } = vehicle_icon_box(type);
-	return `<svg viewBox="${ic.vb}" width="${size}" height="${((size * h) / w).toFixed(1)}" fill="${color || "currentColor"}">${ic.d}</svg>`;
-};
-
-// Halqa ichidagi SVG uchun: (x, y) — belgi markazi
-const vehicle_icon_g = (type, x, y, target_w, color) => {
-	const { ic, w, h } = vehicle_icon_box(type);
-	const k = target_w / w, th = h * k;
-	return `<g transform="translate(${(x - target_w / 2).toFixed(1)} ${(y - th / 2).toFixed(1)}) scale(${k.toFixed(4)})" fill="${color}">${ic.d}</g>`;
+// Brend logotipi; logotip bo'lmasa yoki yuklanmasa — bosh harf nishoni
+const brand_logo = (logo, name, h = 20) => {
+	const ini = `style="width:${h}px;height:${h}px;font-size:${Math.round(h * 0.48)}px"`;
+	return logo
+		? `<img class="sd-lg-img" src="${esc(logo)}" alt="${esc(name)}" title="${esc(name)}" loading="lazy" style="height:${h}px;max-width:${Math.round(h * 2.8)}px" data-fb="${esc(initial(name))}" data-fbc="sd-ini" data-fbs='${ini}'>`
+		: `<span class="sd-ini" ${ini}>${esc(initial(name))}</span>`;
 };
 
 const SD_API = "avtodata.avtodata.page.sales_dashboard.sales_dashboard";
@@ -76,6 +77,9 @@ class SalesDashboard {
 		this.share_mode = "month";
 		this.top_limit = 10;
 		this.compare_models = [];
+		// Animatsiya xotirasi: har element (kalit bo'yicha) oxirgi holati —
+		// qayta chizilganda ustun/bo'lak shu holatdan yangi qiymatga o'tadi.
+		this._prev = {};
 		this.$root.html(`
 			<style>
 				.sd-body { font-size: 14px; --sd-up: #1a7f4b; --sd-down: #b3261e; --sd-bar-prev: #a3acc2; }
@@ -105,7 +109,7 @@ class SalesDashboard {
 				.sd-hb.clickable .sd-hbar, .drv-brands .sd-drv, .drv-models .sd-drv { cursor: pointer; }
 				.sd-hb.clickable .sd-hbar:hover .l, .drv-brands .sd-drv:hover > span:first-child, .drv-models .sd-drv:hover > span:first-child { color: var(--primary); font-weight: 600; }
 				.sd-hbar { display: grid; grid-template-columns: minmax(96px, 32%) 1fr minmax(64px, auto); gap: 8px; align-items: center; font-size: 13px; padding: 1px 0; }
-				.sd-hbar .l { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+				.sd-hbar .l { overflow: hidden; min-width: 0; }
 				.sd-hbar .n { color: var(--text-muted); font-size: 11px; margin-right: 4px; }
 				.sd-hbar .bar { height: 13px; border-radius: 3px; background: var(--s, var(--primary)); min-width: 2px; }
 				.sd-hbar .val { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -188,7 +192,6 @@ class SalesDashboard {
 				.rb-gl { position: absolute; top: 0; bottom: 0; width: 1px; background: var(--border-color); opacity: .7; }
 				.rb-range { position: absolute; top: 50%; transform: translateY(-50%); height: 14px; min-width: 4px; border-radius: 6px; background: var(--rb-c, #1baf7a); }
 				.rb-avg { position: absolute; top: 50%; transform: translate(-50%, -50%); width: 2px; height: 18px; background: var(--card-bg); border-radius: 1px; }
-				.rb-promo { position: absolute; top: 50%; transform: translate(-50%, -50%) rotate(45deg); width: 10px; height: 10px; background: var(--rb-promo, #eb6834); border: 2px solid var(--card-bg); }
 				.rb-empty { grid-column: 2 / -1; color: var(--text-muted); font-size: 13px; }
 				.rb-axis { border-top: 1px solid var(--border-color); margin-top: 4px; padding-top: 6px; }
 				.rb-axis .rb-track { height: 14px; }
@@ -202,10 +205,10 @@ class SalesDashboard {
 				.sd-donut > svg { display: block; }
 				.sd-donut .lg svg { display: block; flex: 0 0 auto; }
 				.sd-donut .lg { display: flex; flex-direction: column; justify-content: center; gap: 8px; font-size: 13.5px; min-width: 0; }
-				.sd-donut .lg div { display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px; align-items: center; }
-				.sd-donut .lg .ic { display: inline-flex; width: 26px; }
+				.sd-donut .lg div { display: flex; gap: 10px; align-items: center; }
+				.sd-donut .lg div > span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 				@media (max-width: 1150px) { .sd-donut { grid-template-columns: 1fr !important; justify-items: center; } .sd-donut .lg { width: 100%; max-width: 420px; } }
-				.sd-donut .lg i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+				.sd-donut .lg i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex: 0 0 auto; }
 				.sd-donut .lg b { font-variant-numeric: tabular-nums; } .sd-donut .lg small { color: var(--text-muted); font-variant-numeric: tabular-nums; min-width: 60px; text-align: right; }
 				.sd-donut .lg div.click { cursor: pointer; } .sd-donut .lg div.click:hover b { color: var(--primary); }
 				.sd-donut.clickable .sl { cursor: pointer; } .sd-donut.clickable .sl:hover { opacity: .82; }
@@ -237,6 +240,67 @@ class SalesDashboard {
 				.sd-cmp-table td.best { color: var(--sd-up); font-weight: 700; } .sd-cmp-table td.worst { color: var(--sd-down); }
 				.sd-cmp-table th.m { text-align: right; } .sd-cmp-table td:first-child { color: var(--text-muted); }
 				.sd-btn { cursor: pointer; border: 1px solid var(--border-color); border-radius: 8px; padding: 5px 12px; font-size: var(--text-sm); background: var(--card-bg); }
+
+				/* ---- jonli animatsiyalar: qiymatlar oldingi holatdan yangisiga o'tadi */
+				.sd-root { position: relative; }
+				.sd-body { transition: opacity .25s; }
+				.sd-body.sd-busy { opacity: .55; pointer-events: none; }
+				.sd-root.busy::before { content: ""; position: absolute; left: 0; top: 46px; height: 3px; width: 30%; border-radius: 3px; background: var(--primary); animation: sdSlide 1s ease-in-out infinite; z-index: 2; }
+				@keyframes sdSlide { 0% { left: 0; } 50% { left: 70%; } 100% { left: 0; } }
+				@keyframes sdUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+				@keyframes sdFade { from { opacity: 0; } to { opacity: 1; } }
+				@keyframes sdPop { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+				.sd-enter .sd-panel, .sd-enter .sd-kpi, .sd-enter .sd-cmp-card { animation: sdUp .55s cubic-bezier(.22, 1, .36, 1) both; }
+				.sd-bars .bar { transition: height .85s cubic-bezier(.22, 1, .36, 1) var(--d, 0ms), opacity .15s; }
+				.sd-bars .bar .val { animation: sdFade .4s .5s both; }
+				.sd-hbar .bar, .sd-stack i, .sd-tier .p i { transition: width .85s cubic-bezier(.22, 1, .36, 1) var(--d, 0ms); }
+				.sd-drv .track i, .rb-range { transition: left .85s cubic-bezier(.22, 1, .36, 1), width .85s cubic-bezier(.22, 1, .36, 1); }
+				.sd-drv .track b { animation: sdFade .4s .45s both; }
+				.sd-ring .sl { transition: stroke-dasharray 1s cubic-bezier(.22, 1, .36, 1), stroke-dashoffset 1s cubic-bezier(.22, 1, .36, 1), opacity .15s; }
+				.sd-ring .pl { animation: sdFade .4s .7s both; pointer-events: none; }
+				.sd-ch-anim .line-graph-path { transition: stroke-dashoffset 1.2s cubic-bezier(.33, 1, .68, 1); }
+				.sd-ch-anim .region-fill { animation: sdFade .8s .6s both; }
+				@media (prefers-reduced-motion: reduce) {
+					.sd-body *, .sd-body *::before { animation: none !important; transition: none !important; }
+				}
+
+				/* ---- logotiplar va rasmlar */
+				.sd-lg-img { object-fit: contain; vertical-align: middle; flex: 0 0 auto; }
+				[data-theme="dark"] .sd-lg-img { background: #fff; border-radius: 5px; padding: 1px 3px; }
+				.sd-ini { display: inline-grid; place-items: center; flex: 0 0 auto; border-radius: 7px; background: var(--bg-color); color: var(--text-muted); font-weight: 800; line-height: 1; }
+				.sd-q { display: inline-grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; border: 2.5px solid var(--text-muted); color: var(--text-muted); font-size: 22px; font-weight: 700; }
+				.sd-hbar .l { display: flex; align-items: center; gap: 6px; }
+				.sd-hbar .l .t { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+				.sd-brand-cell { display: flex; align-items: center; gap: 10px; }
+				.sd-brand-cell .lg { width: 58px; display: flex; justify-content: center; }
+				.sd-model-cell small { display: flex; align-items: center; gap: 8px; color: var(--text-muted); }
+				.sd-model-cell .mr { display: flex; align-items: center; gap: 10px; margin-top: 3px; }
+				.sd-thumb { width: 84px; height: 44px; flex: 0 0 auto; display: grid; place-items: center; }
+
+				/* ---- rasmli donut: chapda va o'ngda suratli ko'rsatkichlar, o'rtada halqa */
+				.sd-pd { display: grid; grid-template-columns: minmax(0, 1fr) minmax(170px, 230px) minmax(0, 1fr); gap: 10px; align-items: center; }
+				.sd-pd-col { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+				.sd-pd-it { text-align: center; border-radius: 10px; padding: 6px 4px; transition: background .2s, transform .2s; }
+				.sd-enter .sd-pd-it { animation: sdPop .5s cubic-bezier(.22, 1, .36, 1) var(--d, 0ms) both; }
+				.sd-donut.stack { justify-items: center; } .sd-donut.stack .lg { width: 100%; }
+				.sd-model-img { max-width: 100%; max-height: 100%; object-fit: contain; }
+				.sd-model-img.generic { opacity: .35; filter: grayscale(1); }
+				.sd-thumb img { width: 100%; height: 100%; object-fit: contain; }
+				.sd-mini img { max-width: 56px; max-height: 36px; object-fit: contain; }
+				.sd-note { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--yellow-300, #f5c451); background: var(--bg-yellow, #fff8e1); color: var(--text-on-yellow, #7a5a00); border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 13.5px; }
+				.sd-note b { font-weight: 700; }
+				.sd-pd-it.click { cursor: pointer; } .sd-pd-it.click:hover { background: var(--bg-color); transform: translateY(-2px); }
+				.sd-pd-it.zero { opacity: .55; }
+				.sd-pd-it .pic { height: 64px; display: grid; place-items: center; }
+				.sd-pd-it .pic img:not(.sd-lg-img) { max-height: 64px; max-width: min(150px, 100%); object-fit: contain; }
+				.sd-pd-it .pv { font-size: 24px; font-weight: 800; line-height: 1.15; margin-top: 4px; font-variant-numeric: tabular-nums; }
+				.sd-pd-it .pl { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+				.sd-pd-it .pl i { width: 8px; height: 8px; border-radius: 50%; flex: 0 0 auto; }
+				.sd-pd-it .pl span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+				.sd-pd.logos .pic { height: 46px; }
+				.sd-pd-ring svg { display: block; width: 100%; height: auto; }
+				.sd-pd-ring .sl { cursor: default; } .sd-pd.clickable .sd-pd-ring .sl[data-c] { cursor: pointer; } .sd-pd-ring .sl:hover { opacity: .82; }
+				@media (max-width: 700px) { .sd-pd { grid-template-columns: 1fr 1fr; } .sd-pd-ring { grid-column: 1 / -1; order: -1; width: 100%; max-width: 230px; margin: 0 auto; } }
 			</style>
 			<div class="sd-tabs">
 				<span class="sd-tab" data-tab="sales">${__("Sales Dashboard")}</span>
@@ -267,7 +331,15 @@ class SalesDashboard {
 		add({ fieldname: "timespan", label: __("Timespan"), fieldtype: "Select", default: "all",
 			options: [["all", __("All time")], ["last_month", __("Last month")], ["last_3", __("Last 3 months")], ["last_6", __("Last 6 months")], ["last_12", __("Last 12 months")], ["ytd", __("Year to date")], ["last_year", __("Last year")], ["custom", __("Custom")]].map(([value, label]) => ({ value, label })),
 			change: () => { if (F.timespan.get_value() !== "custom") { this.apply_timespan(); reload_sales(); } } });
-		const custom_dates = () => { F.timespan.set_input("custom"); reload_sales(); };
+		// Sanalarni dastur o'zi qo'yganda (tayyor davr, grafikdan bosish) maydonning
+		// change hodisasi baribir keladi — qiymat biz qo'ygan bilan bir xil bo'lsa e'tiborsiz.
+		const custom_dates = () => {
+			const a = this.F.from_date.get_value(), b = this.F.to_date.get_value();
+			if (this._auto_dates && this._auto_dates.from === a && this._auto_dates.to === b) return;
+			this._auto_dates = null;
+			F.timespan.set_input("custom");
+			reload_sales();
+		};
 		add({ fieldname: "from_date", label: __("From date"), fieldtype: "Date", change: custom_dates });
 		add({ fieldname: "to_date", label: __("To date"), fieldtype: "Date", change: custom_dates });
 
@@ -306,16 +378,28 @@ class SalesDashboard {
 		else if (ts === "last_12") from = shift(to, -11);
 		else if (ts === "ytd") from = to.slice(0, 4) + "-01";
 		else if (ts === "last_year") { from = String(+to.slice(0, 4) - 1) + "-01"; upto = String(+to.slice(0, 4) - 1) + "-12"; }
-		F.from_date.set_input(from + "-01");
-		F.to_date.set_input(moment(upto, "YYYY-MM").endOf("month").format("YYYY-MM-DD"));
+		this.set_dates(from + "-01", moment(upto, "YYYY-MM").endOf("month").format("YYYY-MM-DD"));
+	}
+
+	// Oxirgi oy shubhali kichik bo'lsa (sinov yozuvi / kiritilmagan oy) — ogohlantirish
+	data_note(n) {
+		if (!n) return "";
+		return `<div class="sd-note"><span>⚠️</span><span>${__("{0} looks incomplete: only {1} entries, {2} units (a typical month has about {3}). \"Last month\", MoM, rating and some percentages are computed from this month. Check the entries or wait until the month is fully entered.", [
+			`<b>${mlabel(n.ym)}</b>`, n.entries, fmt(n.qty), fmt(n.typical),
+		])} <a href="/app/market-entry?date=${encodeURIComponent(JSON.stringify(["Between", [n.ym + "-01", moment(n.ym, "YYYY-MM").endOf("month").format("YYYY-MM-DD")]]))}">${__("Show entries")}</a></span></div>`;
+	}
+
+	set_dates(from, to) {
+		this._auto_dates = { from, to };
+		this.F.from_date.set_input(from);
+		this.F.to_date.set_input(to);
 	}
 
 	// Grafikdan bosilgan davrni filtrga qo'yadi (oy yoki yil)
 	set_period(from_ym, to_ym) {
 		const F = this.F;
 		F.timespan.set_input("custom");
-		F.from_date.set_input(moment(from_ym, "YYYY-MM").startOf("month").format("YYYY-MM-DD"));
-		F.to_date.set_input(moment(to_ym || from_ym, "YYYY-MM").endOf("month").format("YYYY-MM-DD"));
+		this.set_dates(moment(from_ym, "YYYY-MM").startOf("month").format("YYYY-MM-DD"), moment(to_ym || from_ym, "YYYY-MM").endOf("month").format("YYYY-MM-DD"));
 		this.load_sales();
 	}
 
@@ -343,7 +427,15 @@ class SalesDashboard {
 		if (tab === "compare") {
 			if (route[2]) this.compare_models = decodeURIComponent(route[2]).split(",").filter(Boolean).slice(0, 4);
 			this.load_compare();
-		} else if (tab === "segments") this.load_segments();
+		} else if (tab === "segments") {
+			// Model kartasidan "Dashboardda ko'rish": segment + fokus-model oldindan qo'yiladi
+			const ro = frappe.route_options;
+			if (ro && (ro.segment || ro.focus_model)) {
+				frappe.route_options = null;
+				this._preset = { segment: ro.segment, focus_model: ro.focus_model };
+			}
+			this.load_segments();
+		}
 		else this.load_sales();
 	}
 
@@ -351,10 +443,73 @@ class SalesDashboard {
 	// Rasm yuklanmasa (fayl o'chgan, private, tashqi havola ishlamaydi) —
 	// uni jimgina o'rinbosar bilan almashtiramiz, "buzilgan rasm" chiqmasin.
 	fix_broken_images($root) {
-		($root || this.$body).find("img[data-fb]").on("error", function () {
-			const fb = $(this).attr("data-fb");
-			$(this).replaceWith(fb ? `<span class="sd-fb">${frappe.utils.escape_html(fb)}</span>` : "");
+		($root || this.$body).find("img[data-fbhtml]").on("error", function () {
+			$(this).replaceWith($(this).attr("data-fbhtml"));
 		});
+		($root || this.$body).find("img[data-fb]").on("error", function () {
+			const fb = $(this).attr("data-fb"), fbc = $(this).attr("data-fbc") || "sd-fb", fbs = $(this).attr("data-fbs") || "";
+			$(this).replaceWith(fb ? `<span class="${frappe.utils.escape_html(fbc)}" ${fbs}>${frappe.utils.escape_html(fb)}</span>` : "");
+		});
+	}
+
+	// Animatsiya: element oldingi holatidan (yoki `zero`dan) chiziladi,
+	// animate() esa keyingi kadrda yakuniy holatni qo'yadi — CSS transition
+	// qolganini bajaradi. Kalit — elementning barqaror nomi.
+	from(key, zero) {
+		return this._prev[key] || zero;
+	}
+
+	to(key, target) {
+		return `data-to="${esc(target)}" data-k="${esc(key)}"`;
+	}
+
+	reduced_motion() {
+		return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	}
+
+	animate($root) {
+		const $scope = $root || this.$body;
+		const els = $scope.find("[data-to]").toArray();
+		const apply = () => els.forEach((el) => {
+			const target = el.getAttribute("data-to");
+			if (target == null) return;
+			el.style.cssText += ";" + target;
+			this._prev[el.getAttribute("data-k")] = target;
+			el.removeAttribute("data-to");
+		});
+		if (this.reduced_motion()) apply();
+		else requestAnimationFrame(() => requestAnimationFrame(apply));
+		this.count_up($scope);
+	}
+
+	// Raqamlar oldingi qiymatdan yangisiga "sanab" o'tadi
+	count_up($scope) {
+		const reduce = this.reduced_motion();
+		$scope.find("[data-count]").each((_, el) => {
+			const to = +el.getAttribute("data-count"), k = el.getAttribute("data-ck"), kind = el.getAttribute("data-f");
+			el.removeAttribute("data-count");
+			const show = kind === "p1" ? (v) => v.toFixed(1) + "%" : kind === "c" ? (v) => compact(v) : kind === "k" ? (v) => fmtk(v) : (v) => fmt(v);
+			const from = k && this._prev[k] != null ? +this._prev[k] : 0;
+			if (k) this._prev[k] = to;
+			if (reduce || from === to) { el.textContent = show(to); return; }
+			el.textContent = show(from);
+			const t0 = performance.now(), D = 900;
+			const step = (t) => {
+				const p = Math.min((t - t0) / D, 1), e = 1 - Math.pow(1 - p, 3);
+				el.textContent = show(p < 1 ? from + (to - from) * e : to);
+				if (p < 1) requestAnimationFrame(step);
+			};
+			requestAnimationFrame(step);
+		});
+	}
+
+	// Yangi ma'lumot kelguncha eski kontent xiralashadi (bo'sh "Yuklanmoqda" emas),
+	// shunda sahifa sakramaydi va grafiklar eski holatdan yangisiga o'tadi.
+	busy(on) {
+		const has_content = this.$body.children(".sd-grid, .sd-kpis, .sd-cmp-slots").length > 0;
+		if (on && !has_content) this.$body.html(`<div class="sd-empty">${__("Loading")}...</div>`);
+		this.$body.toggleClass("sd-busy", !!on && has_content);
+		this.$root.toggleClass("busy", !!on);
 	}
 
 	// Narx diapazoni grafigi: har model uchun eng arzon—eng qimmat
@@ -388,7 +543,8 @@ class SalesDashboard {
 			if (v == null) return `<div class="bar none" title="${esc(l)}: ${__("no data")}"></div>`;
 			const h = (Math.abs(v) / max) * 100;
 			const inside = h > 92;
-			return `<div class="bar" style="--c:${sr.color};height:${h}%" title="${esc(sr.name)} · ${esc(l)}: ${fmt(v)} ${esc(measure)}"><span class="val ${inside ? "in" : ""}">${num(v)}</span></div>`;
+			const k = `${sel}|${sr.name}|${l}`;
+			return `<div class="bar" style="--c:${sr.color};--d:${Math.min(i * 30, 450)}ms;${this.from(k, "height:0%")}" ${this.to(k, `height:${h.toFixed(2)}%`)} title="${esc(sr.name)} · ${esc(l)}: ${fmt(v)} ${esc(measure)}"><span class="val ${inside ? "in" : ""}">${num(v)}</span></div>`;
 		}).join("")}</div>`).join("");
 
 		$el.html(`<div class="sd-bars ${labels.length > 14 ? "dense" : ""} ${vertical ? "multi" : ""}" style="--h:${H}px">
@@ -399,52 +555,85 @@ class SalesDashboard {
 			${series.length > 1 ? `<div class="sd-leg">${series.map((sr) => `<span><i style="background:${sr.color}"></i>${esc(sr.name)}</span>`).join("")}</div>` : ""}
 		</div>`);
 		if (opts.onclick) $el.find(".grp").each((i, g) => $(g).css("cursor", "pointer").on("click", () => opts.onclick(i)));
+		this.animate($el);
 	}
 
-	// O'z donut'i: foizlar doim ko'rinadi; ixtiyoriy ravishda tur belgilari
+	// Halqa (SVG): har bo'lak — pathLength=100 li aylana chizig'i, shuning uchun
+	// uzunlik va boshlanish nuqtasi foizda beriladi va CSS bilan silliq o'zgaradi.
+	ring(sel, rows, total, g) {
+		const { cx, cy, R, r } = g, rm = (R + r) / 2, sw = R - r;
+		const gap = rows.filter((x) => x.value > 0).length > 1 ? 0.6 : 0;
+		let acc = 0, slices = "", labels = "";
+		rows.forEach((row, i) => {
+			const frac = total ? row.value / total : 0, len = Math.max(frac * 100 - gap, 0);
+			const color = row.color || SD_COLORS[i % SD_COLORS.length], k = `${sel}|ring|${row.label}`;
+			slices += `<circle class="sl" data-i="${i}" ${row.click ? 'data-c="1"' : ""} cx="${cx}" cy="${cy}" r="${rm}" pathLength="100" fill="none" stroke="${color}" stroke-width="${sw}" transform="rotate(-90 ${cx} ${cy})"
+				style="${this.from(k, "stroke-dasharray:0 100;stroke-dashoffset:0")}" ${this.to(k, `stroke-dasharray:${len.toFixed(3)} 100;stroke-dashoffset:${(-acc).toFixed(3)}`)}><title>${esc(row.label)}: ${fmt(row.value)} (${(frac * 100).toFixed(1)}%)</title></circle>`;
+			if (frac >= 0.07 && g.labels !== false) {
+				const am = -Math.PI / 2 + ((acc + frac * 50) / 100) * 2 * Math.PI;
+				labels += `<text class="pl" x="${(cx + rm * Math.cos(am)).toFixed(1)}" y="${(cy + rm * Math.sin(am)).toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="${g.fs || 13}" font-weight="700" fill="#fff">${(frac * 100).toFixed(frac < 0.1 ? 1 : 0)}%</text>`;
+			}
+			acc += frac * 100;
+		});
+		return `<g class="sd-ring">${slices}${labels}</g>`;
+	}
+
+	// Oddiy donut + legenda (ixtiyoriy: har qatorda logotip — row.pic)
 	donut(sel, rows, opts = {}) {
 		const $el = this.$body.find(sel);
 		if (!$el.length) return;
 		const total = rows.reduce((a, r) => a + r.value, 0);
 		if (!total) { $el.html(`<div class="sd-empty">${__("No records")}</div>`); return; }
+		const W = 210, cx = 105, cy = 105;
+		rows.forEach((row) => (row.click = !!opts.onclick));
 
-		const ico = opts.icons;
-		const W = ico ? 330 : 210, H = ico ? 286 : 210;
-		const cx = ico ? 165 : 105, cy = ico ? 140 : 105, R = ico ? 96 : 98, r = ico ? 58 : 60;
-		let a0 = -Math.PI / 2, paths = "", labels = "", marks = "";
-
-		rows.forEach((row, i) => {
-			const frac = row.value / total, a1 = a0 + frac * 2 * Math.PI, big = frac > 0.5 ? 1 : 0;
-			const P = (rad, a) => `${(cx + rad * Math.cos(a)).toFixed(1)} ${(cy + rad * Math.sin(a)).toFixed(1)}`;
-			const color = SD_COLORS[i % SD_COLORS.length];
-			paths += frac >= 0.999
-				? `<circle class="sl" data-i="${i}" cx="${cx}" cy="${cy}" r="${(R + r) / 2}" fill="none" stroke="${color}" stroke-width="${R - r}"><title>${esc(row.label)}: ${fmt(row.value)}</title></circle>`
-				: `<path class="sl" data-i="${i}" d="M${P(R, a0)} A${R} ${R} 0 ${big} 1 ${P(R, a1)} L${P(r, a1)} A${r} ${r} 0 ${big} 0 ${P(r, a0)} Z" fill="${color}" stroke="var(--card-bg)" stroke-width="2"><title>${esc(row.label)}: ${fmt(row.value)} (${(frac * 100).toFixed(1)}%)</title></path>`;
-
-			const am = (a0 + a1) / 2;
-			if (frac >= 0.07) {
-				const lx = cx + ((R + r) / 2) * Math.cos(am), ly = cy + ((R + r) / 2) * Math.sin(am);
-				labels += `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" font-size="13" font-weight="700" fill="#fff">${(frac * 100).toFixed(frac < 0.1 ? 1 : 0)}%</text>`;
-			}
-			if (ico && frac >= 0.06) {
-				const ix = cx + (R + 28) * Math.cos(am), iy = cy + (R + 28) * Math.sin(am);
-				marks += `<line x1="${(cx + (R + 4) * Math.cos(am)).toFixed(1)}" y1="${(cy + (R + 4) * Math.sin(am)).toFixed(1)}" x2="${(cx + (R + 14) * Math.cos(am)).toFixed(1)}" y2="${(cy + (R + 14) * Math.sin(am)).toFixed(1)}" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/>
-					${vehicle_icon_g(row.label, ix, iy, 40, color)}`;
-			}
-			a0 = a1;
-		});
-
-		$el.html(`<div class="sd-donut" style="grid-template-columns:${W}px minmax(0, 1fr)">
-			<svg viewBox="0 0 ${W} ${H}" style="width:${W}px;height:${H}px">${paths}${marks}${labels}
-				<text x="${cx}" y="${cy - 5}" text-anchor="middle" font-size="19" font-weight="700" fill="var(--text-color)">${compact(total)}</text>
+		$el.html(`<div class="sd-donut ${opts.stack ? "stack" : ""}" style="grid-template-columns:${opts.stack ? "minmax(0, 1fr)" : `${W}px minmax(0, 1fr)`}">
+			<svg viewBox="0 0 ${W} ${W}" style="width:${W}px;height:${W}px">${this.ring(sel, rows, total, { cx, cy, R: 98, r: 60 })}
+				<text x="${cx}" y="${cy - 5}" text-anchor="middle" font-size="19" font-weight="700" fill="var(--text-color)" data-count="${total}" data-ck="${esc(sel)}|total" data-f="c">${compact(total)}</text>
 				<text x="${cx}" y="${cy + 15}" text-anchor="middle" font-size="12" fill="var(--text-muted)">${esc(opts.center || __("units"))}</text></svg>
 			<div class="lg">${rows.map((row, i) => {
 				const color = SD_COLORS[i % SD_COLORS.length];
-				return `<div class="${opts.onclick ? "click" : ""}" data-i="${i}">${ico ? `<span class="ic">${vehicle_icon_svg(row.label, 26, color)}</span>` : `<i style="background:${color}"></i>`}<span>${esc(row.label)}</span><small>${fmt(row.value)}</small><b>${((row.value / total) * 100).toFixed(1)}%</b></div>`;
+				return `<div class="${opts.onclick ? "click" : ""}" data-i="${i}"><i style="background:${color}"></i>${row.pic || ""}<span title="${esc(row.label)}">${esc(row.label)}</span><small>${fmt(row.value)}</small><b>${((row.value / total) * 100).toFixed(1)}%</b></div>`;
 			}).join("")}</div></div>`);
 		if (opts.onclick) {
-			$el.addClass("clickable").find("[data-i]").on("click", (e) => opts.onclick(+$(e.currentTarget).attr("data-i")));
+			$el.find(".sd-donut").addClass("clickable");
+			$el.find("[data-i]").on("click", (e) => opts.onclick(+$(e.currentTarget).attr("data-i")));
 		}
+		this.fix_broken_images($el);
+		this.animate($el);
+	}
+
+	// Rasmli donut: o'rtada halqa, ikki yonida surat/logotip + foiz + nom.
+	// rows: { label, value, pic (html), click (bool), title }
+	pic_donut(sel, rows, opts = {}) {
+		const $el = this.$body.find(sel);
+		if (!$el.length) return;
+		const total = rows.reduce((a, r) => a + r.value, 0);
+		if (!total) { $el.html(`<div class="sd-empty">${__("No records")}</div>`); return; }
+		const item = (row, i) => {
+			const color = row.color || SD_COLORS[i % SD_COLORS.length], p = (row.value / total) * 100;
+			return `<div class="sd-pd-it ${row.click ? "click" : ""} ${row.value ? "" : "zero"}" data-i="${i}" style="--d:${120 + i * 70}ms" title="${esc(row.title || row.label)}: ${fmt(row.value)} ${__("units")}">
+				<div class="pic">${row.pic || ""}</div>
+				<div class="pv" data-count="${p.toFixed(3)}" data-ck="${esc(sel)}|pct|${esc(row.label)}" data-f="p1">${p.toFixed(1)}%</div>
+				<div class="pl"><i style="background:${color}"></i><span>${esc(row.label)}</span></div>
+			</div>`;
+		};
+		// Kattadan kichikka: chap va o'ng ustunga navbatma-navbat
+		const left = rows.map((r, i) => (i % 2 ? "" : item(r, i))).join("");
+		const right = rows.map((r, i) => (i % 2 ? item(r, i) : "")).join("");
+		const S = 220, c = S / 2;
+		$el.html(`<div class="sd-pd ${opts.logos ? "logos" : ""} ${opts.onclick ? "clickable" : ""}">
+			<div class="sd-pd-col">${left}</div>
+			<div class="sd-pd-ring"><svg viewBox="0 0 ${S} ${S}">${this.ring(sel, rows, total, { cx: c, cy: c, R: 104, r: 72, labels: false })}
+				<text x="${c}" y="${c - 4}" text-anchor="middle" font-size="24" font-weight="800" fill="var(--text-color)" data-count="${total}" data-ck="${esc(sel)}|total">${fmt(total)}</text>
+				<text x="${c}" y="${c + 18}" text-anchor="middle" font-size="12" fill="var(--text-muted)">${esc(opts.center || __("units"))}</text></svg></div>
+			<div class="sd-pd-col">${right}</div>
+		</div>`);
+		if (opts.onclick) {
+			$el.find(".sd-pd-it.click, .sl[data-c]").on("click", (e) => opts.onclick(+$(e.currentTarget).attr("data-i")));
+		}
+		this.fix_broken_images($el);
+		this.animate($el);
 	}
 
 	// Frappe Charts o'ramchisi — bo'sh ma'lumotda yiqilmasin
@@ -458,7 +647,30 @@ class SalesDashboard {
 			el.innerHTML = `<div class="sd-empty">${__("No data")}</div>`;
 			return;
 		}
-		return new frappe.Chart(el, Object.assign({ colors: SD_COLORS, height: 230, animate: 0, truncateLegends: 1 }, opts));
+		const chart = new frappe.Chart(el, Object.assign({ colors: SD_COLORS, height: 230, animate: 0, truncateLegends: 1 }, opts));
+		this.draw_lines(el);
+		return chart;
+	}
+
+	// Chiziqli grafik: chiziqlar chapdan o'ngga "chizilib" chiqadi
+	draw_lines(el, tries = 0) {
+		if (this.reduced_motion()) return;
+		const paths = el.querySelectorAll("path.line-graph-path");
+		if (!paths.length) {
+			if (tries < 3) setTimeout(() => this.draw_lines(el, tries + 1), 40);
+			return;
+		}
+		el.classList.remove("sd-ch-anim");
+		paths.forEach((p) => {
+			const L = p.getTotalLength ? p.getTotalLength() : 0;
+			if (!L) return;
+			p.style.transition = "none";
+			p.style.strokeDasharray = `${L} ${L}`;
+			p.style.strokeDashoffset = L;
+		});
+		el.getBoundingClientRect();
+		el.classList.add("sd-ch-anim");
+		requestAnimationFrame(() => paths.forEach((p) => { p.style.transition = ""; p.style.strokeDashoffset = 0; }));
 	}
 
 	// Gorizontal reyting ro'yxati (TOP modellar / brendlar / segmentlar)
@@ -468,7 +680,10 @@ class SalesDashboard {
 		return (
 			`<div class="sd-hb ${cls_extra}">` +
 			rows
-				.map((r, i) => `<div class="sd-hbar ${r[key] === current ? "cur" : ""}" data-key="${esc(r[key])}"><span class="l"><span class="n">#${i + 1}</span>${esc(r.label || r[key])}</span><div class="bar" style="width:${(r.qty / max) * 100}%;--s:${color}"></div><span class="val">${fmtk(r.qty)}</span></div>`)
+				.map((r, i) => {
+					const k = `hb|${cls_extra}|${r[key]}`, w = ((r.qty / max) * 100).toFixed(2);
+					return `<div class="sd-hbar ${r[key] === current ? "cur" : ""}" data-key="${esc(r[key])}"><span class="l"><span class="n">#${i + 1}</span>${r.pic || ""}<span class="t" title="${esc(r.label || r[key])}">${esc(r.label || r[key])}</span></span><div class="bar" style="--s:${color};--d:${Math.min(i * 35, 500)}ms;${this.from(k, "width:0%")}" ${this.to(k, `width:${w}%`)}></div><span class="val" data-count="${r.qty}" data-ck="${esc(k)}|n" data-f="k">${fmtk(r.qty)}</span></div>`;
+				})
 				.join("") +
 			"</div>"
 		);
@@ -480,8 +695,8 @@ class SalesDashboard {
 		const max = Math.max(...rows.map((r) => Math.abs(r.delta)), 1);
 		return rows
 			.map((r) => {
-				const w = (Math.abs(r.delta) / max) * 45, pos = r.delta >= 0;
-				return `<div class="sd-drv" data-key="${esc(r.brand || r.model || "")}"><span>${esc(r.label)}</span><div class="track"><i style="left:${pos ? 50 : 50 - w}%;width:${w}%;background:${pos ? SD_COLORS[2] : SD_COLORS[6]}"></i><b style="${pos ? `left:${50 + w + 1}%` : `right:${50 + w + 1}%`}" class="${cls(r.delta)}">${r.delta > 0 ? "+" : ""}${fmtk(r.delta)}</b></div></div>`;
+				const w = (Math.abs(r.delta) / max) * 45, pos = r.delta >= 0, k = `drv|${r.brand || r.model || r.label}`;
+				return `<div class="sd-drv" data-key="${esc(r.brand || r.model || "")}"><span>${esc(r.label)}</span><div class="track"><i style="background:${pos ? SD_COLORS[2] : SD_COLORS[6]};${this.from(k, "left:50%;width:0%")}" ${this.to(k, `left:${(pos ? 50 : 50 - w).toFixed(2)}%;width:${w.toFixed(2)}%`)}></i><b style="${w > 28 ? (pos ? `right:${(50 - w + 1).toFixed(2)}%;color:#fff` : `left:${(50 - w + 1).toFixed(2)}%;color:#fff`) : pos ? `left:${(50 + w + 1).toFixed(2)}%` : `right:${(50 + w + 1).toFixed(2)}%`}" class="${w > 28 ? "" : cls(r.delta)}">${r.delta > 0 ? "+" : ""}${fmtk(r.delta)}</b></div></div>`;
 			})
 			.join("");
 	}
@@ -489,7 +704,7 @@ class SalesDashboard {
 	range_bars(sel, rows, opts = {}) {
 		const $el = this.$body.find(sel);
 		if (!$el.length) return;
-		const vals = rows.flatMap((r) => [r.max, r.min, r.avg, r.promo]).filter((v) => v != null);
+		const vals = rows.flatMap((r) => [r.max, r.min, r.avg]).filter((v) => v != null);
 		if (!vals.length) { $el.html(`<div class="sd-empty">${__("No prices entered yet")}</div>`); return; }
 
 		const raw_max = Math.max(...vals);
@@ -509,9 +724,6 @@ class SalesDashboard {
 				return `<div class="rb-row" data-i="${i}">${name}<div class="rb-empty">${__("No price entered")}</div></div>`;
 			}
 			const w = Math.max(pct(r.max) - pct(r.min), 0.6);
-			const promo = r.promo != null
-				? `<span class="rb-promo" style="left:${pct(r.promo)}%" title="${__("Best promo")}: ${fmt(r.promo)}"></span>`
-				: "";
 			const avg = r.avg != null && r.max !== r.min
 				? `<span class="rb-avg" style="left:${pct(r.avg)}%" title="${__("Average price")}: ${fmt(r.avg)}"></span>`
 				: "";
@@ -520,7 +732,7 @@ class SalesDashboard {
 				<div class="rb-min">${num(r.min)}</div>
 				<div class="rb-track" title="${esc(r.label)}: ${fmt(r.min)} — ${fmt(r.max)}">
 					${ticks.map((g) => `<i class="rb-gl" style="left:${pct(g)}%"></i>`).join("")}
-					<div class="rb-range" style="left:${pct(r.min)}%;width:${w}%"></div>${avg}${promo}
+					<div class="rb-range" style="${this.from(`rb|${sel}|${r.model}`, `left:${pct(r.min).toFixed(2)}%;width:0%`)}" ${this.to(`rb|${sel}|${r.model}`, `left:${pct(r.min).toFixed(2)}%;width:${w.toFixed(2)}%`)}></div>${avg}
 				</div>
 				<div class="rb-max">${num(r.max)}</div>
 			</div>`;
@@ -537,11 +749,12 @@ class SalesDashboard {
 				if (rows[i] && !rows[i].no_data) opts.onclick(i);
 			});
 		}
+		this.animate($el);
 	}
 
 	// ---------------------------------------------------------- SALES TAB
 	load_sales() {
-		this.$body.html(`<div class="sd-empty">${__("Loading")}...</div>`);
+		this.busy(true);
 		this.sf = this.sales_filters();
 		this.safe_call(`${SD_API}.get_sales_data`, { filters: this.sf }, (m) => this.render_sales(m));
 	}
@@ -549,16 +762,24 @@ class SalesDashboard {
 	// Barcha yuklashlar shu yerdan o'tadi: xato bo'lsa ekranda sababi ko'rinadi
 	safe_call(method, args, render, sel) {
 		const $target = sel ? this.$body.find(sel) : this.$body;
+		// Birinchi marta (bo'sh ekranga) chizilganda paneller ketma-ket paydo bo'ladi
+		const first = !sel && !this.$body.children(".sd-grid, .sd-kpis, .sd-cmp-slots").length;
 		frappe.call({ method, args })
 			.then((r) => {
+				if (!sel) this.busy(false);
 				try {
 					render(r && r.message);
+					if (first) {
+						this.$body.addClass("sd-enter");
+						setTimeout(() => this.$body.removeClass("sd-enter"), 900);
+					}
 				} catch (e) {
 					console.error("[sales-dashboard]", e);
 					$target.html(`<div class="sd-empty">${__("Could not draw this block")}<br><small>${frappe.utils.escape_html(e.message || e)}</small></div>`);
 				}
 			})
 			.catch((e) => {
+				if (!sel) this.busy(false);
 				console.error("[sales-dashboard]", e);
 				$target.html(`<div class="sd-empty">${__("Could not load data")}</div>`);
 			});
@@ -576,27 +797,29 @@ class SalesDashboard {
 		F.segment.set_input(this.sf.segment || "");
 		if (!F.from_date.get_value() && !F.to_date.get_value()) this.apply_timespan();
 		const k = d.kpi;
-		const fuel_tiles = k.fuel.map((x, i) => `<div class="sd-kpi click" style="--k:${SD_COLORS[i + 1]}" data-fuel="${esc(x.fuel)}"><div class="k">${__("Powertrain")}: ${esc(x.fuel)}</div><div class="v">${fmt(x.qty)}</div><div class="d">${__("Click to filter")}</div></div>`).join("");
+		const fuel_tiles = k.fuel.map((x, i) => `<div class="sd-kpi click" style="--k:${SD_COLORS[i + 1]}" data-fuel="${esc(x.fuel)}"><div class="k">${__("Powertrain")}: ${esc(x.fuel)}</div><div class="v" data-count="${x.qty}" data-ck="kpi|fuel|${esc(x.fuel)}">${fmt(x.qty)}</div><div class="d">${__("Click to filter")}</div></div>`).join("");
 		const tier_total = d.tiers.reduce((a, t) => a + t.qty, 0) || 1;
 
 		this.$body.html(`
+			${this.data_note(d.data_note)}
 			<div class="sd-sub">${__("Data")}: ${mlabel(d.bounds.from)} — ${mlabel(d.bounds.to)} · ${__("Selected")}: ${mlabel(d.period.from)} — ${mlabel(d.period.to)}</div>
 			<div class="sd-kpis">
-				<div class="sd-kpi" style="--k:${SD_COLORS[2]}"><div class="k">${__("Sales, units")}</div><div class="v">${fmt(k.total)}</div><div class="d"><b class="${cls(k.growth)}">${pct(k.growth)}</b> · ${k.comparable_months} ${__("comparable months to previous year")}</div></div>
+				<div class="sd-kpi" style="--k:${SD_COLORS[2]}"><div class="k">${__("Sales, units")}</div><div class="v" data-count="${k.total}" data-ck="kpi|total">${fmt(k.total)}</div><div class="d"><b class="${cls(k.growth)}">${pct(k.growth)}</b> · ${k.comparable_months} ${__("comparable months to previous year")}</div></div>
 				${fuel_tiles}
-				<div class="sd-kpi" style="--k:${SD_COLORS[0]}"><div class="k">${__("Brands, count")}</div><div class="v">${fmt(k.brands)}</div></div>
-				<div class="sd-kpi" style="--k:${SD_COLORS[5]}"><div class="k">${__("Models, count")}</div><div class="v">${fmt(k.models)}</div></div>
+				<div class="sd-kpi" style="--k:${SD_COLORS[0]}"><div class="k">${__("Brands, count")}</div><div class="v" data-count="${k.brands}" data-ck="kpi|brands">${fmt(k.brands)}</div></div>
+				<div class="sd-kpi" style="--k:${SD_COLORS[5]}"><div class="k">${__("Models, count")}</div><div class="v" data-count="${k.models}" data-ck="kpi|models">${fmt(k.models)}</div></div>
 			</div>
 			<div class="sd-grid"><div class="sd-panel c12"><h4>${__("Brand positioning")}</h4><div class="hint">${__("Period, type, segment and powertrain apply; brand and model do not narrow the share base. Click a tier to filter.")}${this.tier ? ` · <b>${__("Applied")}: ${esc(this.tier)}</b> (${__("click again to clear")})` : ""}</div>
-				<div class="sd-stack">${d.tiers.map((t, i) => `<i style="width:${(t.qty / tier_total) * 100}%;background:${SD_COLORS[i]}"></i>`).join("")}</div>
-				<div class="sd-tiers">${d.tiers.map((t, i) => `<div class="sd-tier ${this.tier === t.tier ? "active" : ""}" data-tier="${esc(t.tier)}" style="--k:${SD_COLORS[i]}"><div class="t"><span>${esc(t.tier)}</span><span>${t.pct}%</span></div><div class="v">${fmt(t.qty)} <span class="m">${__("units")}</span></div><div class="m">${t.brands} ${__("brands")}</div><div class="p"><i style="width:${t.pct}%"></i></div></div>`).join("")}</div></div></div>
+				<div class="sd-stack">${d.tiers.map((t, i) => `<i style="background:${SD_COLORS[i]};${this.from(`stack|${t.tier}`, "width:0%")}" ${this.to(`stack|${t.tier}`, `width:${((t.qty / tier_total) * 100).toFixed(2)}%`)}></i>`).join("")}</div>
+				<div class="sd-tiers">${d.tiers.map((t, i) => `<div class="sd-tier ${this.tier === t.tier ? "active" : ""}" data-tier="${esc(t.tier)}" style="--k:${SD_COLORS[i]}"><div class="t"><span>${esc(t.tier)}</span><span>${t.pct}%</span></div><div class="v"><span data-count="${t.qty}" data-ck="tier|qty|${esc(t.tier)}">${fmt(t.qty)}</span> <span class="m">${__("units")}</span></div><div class="m">${t.brands} ${__("brands")}</div><div class="p"><i style="${this.from(`tier|${t.tier}`, "width:0%")}" ${this.to(`tier|${t.tier}`, `width:${t.pct}%`)}></i></div></div>`).join("")}</div></div></div>
 			<div class="sd-h">${__("Main market dynamics")}</div><div class="sd-hs">${__("Sales volume by years and months, market structure by vehicle types")}</div>
 			<div class="sd-grid">
-				<div class="sd-panel"><h4>${__("Yearly sales dynamics")}</h4><div class="hint">${__("Click a year to filter")}</div><div class="ch-year" style="margin-top:14px"></div></div>
-				<div class="sd-panel"><h4>${__("Monthly sales dynamics")}</h4><div class="hint">${__("Last 12 months of the selected period")} · ${__("click a month to filter")}</div><div class="ch-month" style="margin-top:14px"></div></div>
-				<div class="sd-panel"><h4>${__("Top-15 models")}</h4><div class="hint">${__("Sales leaders for the selected period")} · ${__("click to filter")}</div>${this.hbars(d.top_models, "model", SD_COLORS[2], this.sf.model, "clickable hb-models")}</div>
+				<div class="sd-panel c6"><h4>${__("Yearly sales dynamics")}</h4><div class="hint">${__("Click a year to filter")}</div><div class="ch-year" style="margin-top:14px"></div></div>
+				<div class="sd-panel c6"><h4>${__("Monthly sales dynamics")}</h4><div class="hint">${__("Last 12 months of the selected period")} · ${__("click a month to filter")}</div><div class="ch-month" style="margin-top:14px"></div></div>
 				<div class="sd-panel c6"><h4>${__("Vehicle type share")}</h4><div class="hint">${__("Market structure: PC, SUV, LCV and other types")} · ${__("click to filter")}</div><div class="ch-type" style="margin-top:10px"></div></div>
-				<div class="sd-panel c6"><h4>${__("Top-10 brands")}</h4><div class="hint">${__("Sales leaders for the selected period")} · ${__("click to filter")}</div>${this.hbars(d.top_brands, "brand", SD_COLORS[0], this.sf.brand, "clickable hb-brands")}</div>
+				<div class="sd-panel c6"><h4>${__("Brand share")}</h4><div class="hint">${__("Market structure by brands")} · ${__("click to filter")}</div><div class="ch-brand-pie" style="margin-top:10px"></div></div>
+				<div class="sd-panel c6"><h4>${__("Top-15 models")}</h4><div class="hint">${__("Sales leaders for the selected period")} · ${__("click to filter")}</div>${this.hbars(d.top_models.map((m) => ({ ...m, pic: brand_logo(m.logo, m.brand, 18) })), "model", SD_COLORS[2], this.sf.model, "clickable hb-models")}</div>
+				<div class="sd-panel c6"><h4>${__("Top-10 brands")}</h4><div class="hint">${__("Sales leaders for the selected period")} · ${__("click to filter")}</div>${this.hbars(d.top_brands.map((b) => ({ ...b, pic: brand_logo(b.logo, b.label, 20) })), "brand", SD_COLORS[0], this.sf.brand, "clickable hb-brands")}</div>
 			</div>
 			<div class="sd-h">${__("MoM, YoY and change drivers")}</div><div class="sd-hs">${__("Same-period comparison and brand contribution to the change in sales volume")}</div>
 			<div class="sd-grid">
@@ -606,7 +829,7 @@ class SalesDashboard {
 			<div class="sd-grid"><div class="sd-panel c12"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px"><div><h4>${__("Market share dynamics")}</h4><div class="hint">${__("Top-5 of the selected level; share is computed from the whole filtered market")}</div></div><div class="sd-seg sd-share-mode"><span data-m="month">${__("By months")}</span><span data-m="quarter">${__("By quarters")}</span><span data-m="year">${__("By years")}</span></div></div><div class="ch-share"></div></div></div>
 			<div class="sd-grid"><div class="sd-panel c12"><h4>${__("Market rating")}</h4><div class="hint">${mlabel(d.rating.L)} · ${__("rating and share for the selected slice")} · MoM: ${mlabel(d.rating.L)} ${__("vs")} ${mlabel(d.rating.P)} · YoY: ${__("vs")} ${mlabel(d.rating.Y)}</div>
 				<div style="overflow-x:auto"><table class="sd-table"><tr><th>#</th><th>${__("Brand")}</th><th class="num">${mlabel(d.rating.L)}</th><th class="num">${mlabel(d.rating.P)}</th><th class="num">${mlabel(d.rating.Y)}</th><th class="num">MoM</th><th class="num">YoY</th><th class="num">${__("Market share")}</th><th class="num">${__("Position")}</th></tr>
-				${d.rating.rows.map((r) => `<tr class="click" data-brand="${esc(r.brand)}"><td>${r.rank}</td><td><b>${esc(r.label)}</b></td><td class="num">${fmt(r.L)}</td><td class="num">${fmt(r.P)}</td><td class="num">${fmt(r.Y)}</td><td class="num ${cls(r.mom)}">${pct(r.mom)}</td><td class="num ${cls(r.yoy)}">${r.Y ? pct(r.yoy) : __("New")}</td><td class="num">${r.share}%</td><td class="num">#${r.rank} ${r.move > 0 ? `<span class="sd-up">▲${r.move}</span>` : r.move < 0 ? `<span class="sd-down">▼${-r.move}</span>` : "—"}</td></tr>`).join("")}
+				${d.rating.rows.map((r) => `<tr class="click" data-brand="${esc(r.brand)}"><td>${r.rank}</td><td><div class="sd-brand-cell"><span class="lg">${brand_logo(r.logo, r.label, 26)}</span><b>${esc(r.label)}</b></div></td><td class="num">${fmt(r.L)}</td><td class="num">${fmt(r.P)}</td><td class="num">${fmt(r.Y)}</td><td class="num ${cls(r.mom)}">${pct(r.mom)}</td><td class="num ${cls(r.yoy)}">${r.Y ? pct(r.yoy) : r.is_new ? __("New") : "—"}</td><td class="num">${r.share}%</td><td class="num">#${r.rank} ${r.move > 0 ? `<span class="sd-up">▲${r.move}</span>` : r.move < 0 ? `<span class="sd-down">▼${-r.move}</span>` : "—"}</td></tr>`).join("")}
 				</table></div></div></div>
 			<div class="sd-h">${__("Model price range")}</div><div class="sd-hs">${__("From the most affordable to the most expensive trim")}</div>
 			<div class="sd-grid"><div class="sd-panel c12 sd-prices"><div class="sd-empty">${__("Loading")}...</div></div></div>
@@ -616,7 +839,8 @@ class SalesDashboard {
 			onclick: (i) => this.set_period(`${d.yearly[i].year}-01`, `${d.yearly[i].year}-12`),
 		});
 		this.bars(".ch-month", d.monthly.map((m, i) => mshort(m.ym, i === 0)), [{ name: __("Sales"), values: d.monthly.map((m) => m.qty), color: SD_COLORS[5] }], { onclick: (i) => this.set_period(d.monthly[i].ym) });
-		this.donut(".ch-type", d.type_share.map((t) => ({ label: t.vtype, value: t.qty })), { icons: true, onclick: (i) => { if (d.type_share[i].vtype !== "—") F.vtype.set_value(d.type_share[i].vtype); } });
+		this.render_type_share(d.type_share);
+		this.render_brand_pie(d.top_brands, k);
 		this.bars(".ch-yoy", d.yoy.rows.map((r) => moment(r.ym, "YYYY-MM").format("MMM")), [
 			{ name: String(d.yoy.year - 1), values: d.yoy.rows.map((r) => r.prev), color: getComputedStyle(this.$body[0]).getPropertyValue("--sd-bar-prev").trim() || "#a3acc2" },
 			{ name: String(d.yoy.year), values: d.yoy.rows.map((r) => r.cur), color: SD_COLORS[0] },
@@ -632,6 +856,43 @@ class SalesDashboard {
 		this.$body.find("[data-tier]").on("click", (e) => { const t = $(e.currentTarget).data("tier"); this.tier = this.tier === t ? undefined : t; this.load_sales(); });
 		this.$body.find(".sd-table tr[data-brand]").on("click", (e) => F.brand.set_value($(e.currentTarget).data("brand")));
 		this.$body.find(".sd-share-mode span").on("click", (e) => { this.share_mode = $(e.currentTarget).data("m"); this.render_share(d.share); });
+		this.fix_broken_images();
+		this.animate();
+	}
+
+	// Avtomobil turlari ulushi: har tur o'z surati bilan. Ma'lum turlar
+	// ma'lumot bo'lmasa ham 0% bilan turadi — joylashuv filtrdan filtrga sakramaydi.
+	render_type_share(type_share) {
+		const rows = type_share.map((t) => {
+			const key = vehicle_type_key(t.vtype), vt = VEHICLE_TYPES[key];
+			return {
+				key, vtype: t.vtype, value: t.qty, title: t.vtype, click: key !== "unset" && t.qty > 0,
+				label: vt ? vt.label() : key === "unset" ? __("Not set") : t.vtype,
+				pic: vt ? `<img src="${VT_IMG}${vt.img}" alt="${esc(t.vtype)}" loading="lazy">` : key === "unset" ? `<span class="sd-q">?</span>` : `<span class="sd-ini" style="width:44px;height:44px;font-size:20px">${esc(initial(t.vtype))}</span>`,
+			};
+		});
+		// Bir xil turga tushgan bir nechta segment bo'lsa ham alohida qoladi (filtr aniq nom bilan ishlaydi)
+		Object.keys(VEHICLE_TYPES).concat(["unset"]).forEach((key) => {
+			if (rows.some((r) => r.key === key)) return;
+			const vt = VEHICLE_TYPES[key];
+			rows.push({ key, value: 0, click: false, label: vt ? vt.label() : __("Not set"), pic: vt ? `<img src="${VT_IMG}${vt.img}" alt="" loading="lazy">` : `<span class="sd-q">?</span>` });
+		});
+		// Rang turga bog'lanadi (tartibga emas), shunda filtr o'zgarganda ham rang o'zgarmaydi
+		const order = ["sedan", "van", "suv", "minivan", "pickup", "unset"];
+		rows.forEach((r) => { const j = order.indexOf(r.key); r.color = j >= 0 ? [SD_COLORS[0], SD_COLORS[1], SD_COLORS[5], "#14a3b8", "#8fb33a", SD_COLORS[3]][j] : SD_COLORS[6]; });
+		this.pic_donut(".ch-type", rows, { center: __("vehicles"), onclick: (i) => { if (rows[i].click) this.F.vtype.set_value(rows[i].vtype); } });
+	}
+
+	// Brendlar ulushi: TOP-6 brend logotiplari bilan + qolganlari "Prochie"
+	render_brand_pie(top_brands, k) {
+		const top = top_brands.slice(0, 6);
+		const rest = k.total - top.reduce((a, b) => a + b.qty, 0);
+		const rows = top.map((b, i) => ({ brand: b.brand, label: b.label, value: b.qty, click: true, color: SD_COLORS[i], pic: brand_logo(b.logo, b.label, 38) }));
+		if (rest > 0) {
+			const n = Math.max(k.brands - top.length, 0);
+			rows.push({ label: __("Other"), value: rest, click: false, color: "#a3acc2", pic: `<span class="sd-ini" style="width:38px;height:38px;font-size:14px">${n ? "+" + n : "…"}</span>` });
+		}
+		this.pic_donut(".ch-brand-pie", rows, { logos: true, center: __("vehicles"), onclick: (i) => { if (rows[i].brand) this.F.brand.set_value(rows[i].brand); } });
 	}
 
 	// Narx bloki: dashboard filtrlaridagi TOP modellar bo'yicha
@@ -674,13 +935,12 @@ class SalesDashboard {
 			<div class="rb-legend">
 				<span><i style="color:${SD_COLORS[2]}">▬</i>${__("Minimum — maximum")}</span>
 				<span><i style="color:var(--text-muted)">│</i>${__("Average price")}</span>
-				<span><i style="color:${SD_COLORS[1]}">◆</i>${__("Best promo")}</span>
 			</div>
-			<div class="rb-chart" style="--rb-c:${SD_COLORS[2]};--rb-promo:${SD_COLORS[1]}"></div>
+			<div class="rb-chart" style="--rb-c:${SD_COLORS[2]}"></div>
 			<div class="rb-note">${__("Scale")}: ${scaled ? __("mln") + " " : ""}${esc(d.currency)} · ${d.with_vat ? __("with VAT") : __("without VAT")}. ${__("The range covers active trims with a price.")}${d.other_prices ? " " + __("{0} prices in other currencies are not shown.", [d.other_prices]) : ""}</div>
 			${priced.length ? `<details class="rb-det"><summary>${__("Exact prices and trim coverage")}</summary>
-				<div style="overflow-x:auto"><table class="sd-table"><tr><th>${__("Model")}</th><th class="num">${__("Trims with a price")}</th><th>${__("Cheapest")}</th><th class="num">${__("Minimum")}</th><th>${__("Most expensive")}</th><th class="num">${__("Maximum")}</th><th class="num">${__("Average price")}</th><th class="num">${__("Best promo")}</th><th class="num">${__("Price date")}</th></tr>
-				${priced.map((r) => `<tr><td><small style="color:var(--text-muted)">${esc(r.brand)}</small><br><b>${esc(r.label)}</b></td><td class="num">${r.trims_priced} / ${r.trims_total}</td><td>${esc(this.trim_label(r.min_trim, r.model))}</td><td class="num">${fmt(r.min)}</td><td>${esc(this.trim_label(r.max_trim, r.model))}</td><td class="num">${fmt(r.max)}</td><td class="num">${fmt(r.avg)}</td><td class="num">${r.promo ? fmt(r.promo) : "—"}</td><td class="num">${esc(r.last_date)}</td></tr>`).join("")}
+				<div style="overflow-x:auto"><table class="sd-table"><tr><th>${__("Model")}</th><th class="num">${__("Trims with a price")}</th><th>${__("Cheapest")}</th><th class="num">${__("Minimum")}</th><th>${__("Most expensive")}</th><th class="num">${__("Maximum")}</th><th class="num">${__("Average price")}</th><th class="num">${__("Price date")}</th></tr>
+				${priced.map((r) => `<tr><td><small style="color:var(--text-muted)">${esc(r.brand)}</small><br><b>${esc(r.label)}</b></td><td class="num">${r.trims_priced} / ${r.trims_total}</td><td>${esc(this.trim_label(r.min_trim, r.model))}</td><td class="num">${fmt(r.min)}</td><td>${esc(this.trim_label(r.max_trim, r.model))}</td><td class="num">${fmt(r.max)}</td><td class="num">${fmt(r.avg)}</td><td class="num">${esc(r.last_date)}</td></tr>`).join("")}
 				</table></div></details>` : ""}
 		`);
 
@@ -707,11 +967,16 @@ class SalesDashboard {
 
 	// -------------------------------------------------------- SEGMENTS TAB
 	load_segments() {
-		this.$body.html(`<div class="sd-empty">${__("Loading")}...</div>`);
-		const F = this.F;
-		if (this._last_seg !== F.g_segment.get_value()) this.top_limit = 10;
-		this._last_seg = F.g_segment.get_value();
-		this.gf = Object.assign({}, this.gf, { segment: F.g_segment.get_value() || undefined, year: F.g_year.get_value() || undefined, period: F.g_period.get_value() || "ytd" });
+		this.busy(true);
+		const F = this.F, preset = this._preset;
+		this._preset = null;
+		const seg = preset ? preset.segment : F.g_segment.get_value();
+		if (this._last_seg !== seg) this.top_limit = 10;
+		this._last_seg = seg;
+		// Oldindan qo'yilgan modelda yilni server tanlaydi (modelning oxirgi sotuv yili)
+		this.gf = preset
+			? { segment: seg || undefined, focus_model: preset.focus_model || undefined, period: F.g_period.get_value() || "ytd" }
+			: Object.assign({}, this.gf, { segment: seg || undefined, year: F.g_year.get_value() || undefined, period: F.g_period.get_value() || "ytd" });
 		this.safe_call(`${SD_API}.get_segment_data`, { filters: this.gf }, (m) => this.render_segments(m));
 	}
 
@@ -725,18 +990,19 @@ class SalesDashboard {
 		if (JSON.stringify(F.g_segment.df.options) !== JSON.stringify(seg_opts)) this.set_select_options(F.g_segment, seg_opts, d.segment); else F.g_segment.set_input(d.segment);
 		const year_opts = d.years.map((y) => ({ value: y, label: y }));
 		if (JSON.stringify(F.g_year.df.options) !== JSON.stringify(year_opts)) this.set_select_options(F.g_year, year_opts, d.year); else F.g_year.set_input(d.year);
-		const img = (src) => (src ? `<img src="${esc(src)}" loading="lazy" data-fb="🚗">` : "🚗");
+		const img = (src) => model_img(src, d.segment);
 		const months12 = d.monthly_totals;
 
 		this.$body.html(`
+			${this.data_note(d.data_note)}
 			<div class="sd-sub" style="margin-top:0;display:flex;justify-content:space-between;align-items:center"><span>${__("Period")}: ${mlabel(d.period.from)} — ${mlabel(d.period.to)} · <span class="sd-badge">${d.period.with_data}/${d.period.months} ${__("months with data")}</span></span><span class="sd-btn sd-print">${__("Print / PDF")}</span></div>
 			<div class="sd-kpis">
-				<div class="sd-kpi" style="--k:${SD_COLORS[0]}"><div class="k">${__("Segment size")}</div><div class="v">${fmt(k.size)}</div><div class="d">${mlabel(d.period.from)} — ${mlabel(d.period.to)}</div></div>
+				<div class="sd-kpi" style="--k:${SD_COLORS[0]}"><div class="k">${__("Segment size")}</div><div class="v" data-count="${k.size}" data-ck="seg|size">${fmt(k.size)}</div><div class="d">${mlabel(d.period.from)} — ${mlabel(d.period.to)}</div></div>
 				<div class="sd-kpi" style="--k:${SD_COLORS[4]}"><div class="k">${__("vs previous period")}</div><div class="v ${cls(k.prev_pct)}">${pct(k.prev_pct)}</div><div class="d">${__("was")} ${fmt(k.prev_size)} ${__("units")}</div></div>
 				<div class="sd-kpi" style="--k:${SD_COLORS[6]}"><div class="k">${__("Year over year · YoY")}</div><div class="v ${cls(k.yoy_pct)}">${pct(k.yoy_pct)}</div><div class="d">${__("comparable period")}: ${fmt(k.yoy_size)} ${__("units")}</div></div>
 				<div class="sd-kpi" style="--k:${SD_COLORS[2]}"><div class="k">${__("Slice leader")}</div><div class="v">${esc(k.leader ? k.leader.label : "—")}</div><div class="d">${k.leader ? `${fmt(k.leader.qty)} ${__("units")} · ${k.leader_share}% ${__("of the market")}` : ""}</div></div>
 				<div class="sd-kpi" style="--k:${SD_COLORS[1]}"><div class="k">${__("Participants")}</div><div class="v">${k.brands} / ${k.models}</div><div class="d">${__("brands / models with sales")}</div></div>
-				<div class="sd-kpi" style="--k:${SD_COLORS[5]}"><div class="k">${__("Last month")}</div><div class="v">${fmt(k.last)}</div><div class="d">${mlabel(k.last_ym)} · <b class="${cls(k.mom)}">${pct(k.mom)}</b> MoM</div></div>
+				<div class="sd-kpi" style="--k:${SD_COLORS[5]}"><div class="k">${__("Last month")}</div><div class="v" data-count="${k.last}" data-ck="seg|last">${fmt(k.last)}</div><div class="d">${mlabel(k.last_ym)} · <b class="${cls(k.mom)}">${pct(k.mom)}</b> MoM</div></div>
 			</div>
 			<div class="sd-grid">
 				<div class="sd-panel"><div style="display:flex;justify-content:space-between;gap:8px;align-items:start"><div><h4>${__("Focus model")}</h4><div class="hint">${__("Sales, share and position")}</div></div><select class="form-control input-sm sd-focus-sel" style="width:auto">${d.ranking.map((m) => `<option value="${esc(m.model)}" ${fo && m.model === fo.model ? "selected" : ""}>#${m.rank} · ${esc(m.brand)} ${esc(m.label)}</option>`).join("")}</select></div>
@@ -745,7 +1011,7 @@ class SalesDashboard {
 					<div class="sd-stats"><div><span>${__("Sales for the period")}</span><b>${fmt(fo.period_qty)} ${__("units")}</b></div><div><span>${__("Market share")}</span><b>${fo.share}%</b></div><div><span>${__("Last month")}</span><b>${fmt(fo.last)} ${__("units")}</b></div><div><span>MoM</span><b class="${cls(fo.mom)}">${pct(fo.mom)}</b></div><div><span>YoY</span><b class="${cls(fo.yoy)}">${pct(fo.yoy)}</b></div></div>` : `<div class="sd-empty">${__("No records")}</div>`}
 				</div>
 				<div class="sd-panel c8"><h4>${__("Segment rating")} · ${__("Top models")} <span class="sd-badge">${Math.min(this.top_limit, d.ranking.length)} / ${d.ranking.length}</span></h4><div class="hint">${__("Click a card to change the focus")}</div>
-					<div class="sd-cards">${d.ranking.slice(0, this.top_limit).map((m, i) => `<div class="sd-card ${fo && m.model === fo.model ? "first" : ""}" data-model="${esc(m.model)}"><div class="top"><div><small>#${m.rank}${m.logo ? ` <img class="sd-card-logo" src="${esc(m.logo)}" alt="${esc(m.brand)}" loading="lazy" data-fb="${esc(m.brand)}">` : ` · ${esc(m.brand)}`}</small><b>${esc(m.label)}</b></div><span class="sd-share">${m.share}%</span></div><div class="img">${img(m.image)}</div><div class="qty"><span>${__("Sales")}</span><b>${fmt(m.qty)} ${__("units")}</b></div><div class="foot">${m.move > 0 ? `▲ ${m.move} ${__("positions")}` : m.move < 0 ? `▼ ${-m.move} ${__("positions")}` : __("Position unchanged")}</div></div>`).join("")}</div>
+					<div class="sd-cards">${d.ranking.slice(0, this.top_limit).map((m, i) => `<div class="sd-card ${fo && m.model === fo.model ? "first" : ""}" data-model="${esc(m.model)}"><div class="top"><div><small>#${m.rank} ${brand_logo(m.logo, m.brand, 16)}</small><b>${esc(m.label)}</b></div><span class="sd-share">${m.share}%</span></div><div class="img">${img(m.image)}</div><div class="qty"><span>${__("Sales")}</span><b>${fmt(m.qty)} ${__("units")}</b></div><div class="foot">${m.move > 0 ? `▲ ${m.move} ${__("positions")}` : m.move < 0 ? `▼ ${-m.move} ${__("positions")}` : __("Position unchanged")}</div></div>`).join("")}</div>
 					${d.ranking.length > this.top_limit && this.top_limit < 50 ? `<div class="sd-more"><span class="sd-btn sd-load-more">${__("Show 10 more")} (${Math.min(10, Math.min(50, d.ranking.length) - this.top_limit)})</span></div>` : ""}
 				</div>
 			</div>
@@ -761,7 +1027,7 @@ class SalesDashboard {
 			</div>
 			<div class="sd-grid"><div class="sd-panel c12"><div style="display:flex;justify-content:space-between"><div><h4>${__("Full model rating")}</h4><div class="hint">${d.ranking.length} ${__("models")}</div></div><span class="sd-btn sd-toggle-rank">${__("Show full rating")}</span></div>
 				<div class="sd-rank" style="display:none;overflow-x:auto;margin-top:8px"><table class="sd-table"><tr><th>#</th><th>${__("Brand / model")}</th><th class="num">${__("Sales")}</th><th class="num">${__("Market share")}</th><th class="num">${__("Last month")}</th><th class="num">MoM</th><th class="num">YoY</th><th class="num">${__("Movement")}</th></tr>
-				${d.ranking.map((m) => `<tr class="click" data-model="${esc(m.model)}"><td>#${m.rank}</td><td><small style="color:var(--text-muted)">${esc(m.brand)}</small><br><b>${esc(m.label)}</b></td><td class="num">${fmt(m.qty)}</td><td class="num">${m.share}%</td><td class="num">${fmt(m.last)}</td><td class="num ${cls(m.mom)}">${pct(m.mom)}</td><td class="num ${cls(m.yoy)}">${pct(m.yoy)}</td><td class="num">${m.move > 0 ? `<span class="sd-up">▲${m.move}</span>` : m.move < 0 ? `<span class="sd-down">▼${-m.move}</span>` : "0"}</td></tr>`).join("")}
+				${d.ranking.map((m) => `<tr class="click" data-model="${esc(m.model)}"><td>#${m.rank}</td><td><div class="sd-model-cell"><small>${brand_logo(m.logo, m.brand, 16)}${esc(m.brand)}</small><div class="mr"><span class="sd-thumb">${model_img(m.image, d.segment)}</span><b>${esc(m.label)}</b></div></div></td><td class="num">${fmt(m.qty)}</td><td class="num">${m.share}%</td><td class="num">${fmt(m.last)}</td><td class="num ${cls(m.mom)}">${pct(m.mom)}</td><td class="num ${cls(m.yoy)}">${pct(m.yoy)}</td><td class="num">${m.move > 0 ? `<span class="sd-up">▲${m.move}</span>` : m.move < 0 ? `<span class="sd-down">▼${-m.move}</span>` : "0"}</td></tr>`).join("")}
 				</table></div></div></div>
 			<div class="sd-h">${__("Model price range")}</div><div class="sd-hs">${__("Segment")} ${esc(d.segment)} · ${__("top models by sales")}</div>
 			<div class="sd-grid"><div class="sd-panel c12 sd-prices-seg"><div class="sd-empty">${__("Loading")}...</div></div></div>
@@ -776,7 +1042,7 @@ class SalesDashboard {
 			this.bars(".ch-focus-share", fm.map((m) => moment(m.ym, "YYYY-MM").format("MMM")), [{ name: __("Market share, %"), values: fm.map((m) => m.share), color: SD_COLORS[3] }], { height: 110, unit: "%" });
 		}
 		this.bars(".ch-seg-months", months12.map((m) => moment(m.ym, "YYYY-MM").format("MMM")), [{ name: __("Sales"), values: months12.map((m) => m.qty), color: SD_COLORS[0] }], { height: 230 });
-		this.donut(".ch-brand-share", d.brand_share.slice(0, 6).map((b) => ({ label: b.label, value: b.qty })).concat(d.brand_share.length > 6 ? [{ label: __("Other"), value: d.brand_share.slice(6).reduce((a, b) => a + b.qty, 0) }] : []));
+		this.donut(".ch-brand-share", d.brand_share.slice(0, 6).map((b) => ({ label: b.label, value: b.qty, pic: brand_logo(b.logo, b.label, 18) })).concat(d.brand_share.length > 6 ? [{ label: __("Other"), value: d.brand_share.slice(6).reduce((a, b) => a + b.qty, 0) }] : []), { stack: true });
 		this.chart(".ch-brand-dyn", { type: "line", height: 220, data: { labels: d.brand_dynamics.months.map(mlabel), datasets: d.brand_dynamics.series.map((s) => ({ name: s.label, values: s.values.map((v) => v || 0) })) }, lineOptions: { dotSize: 3 }, tooltipOptions: { formatTooltipY: (v) => v + "%" } });
 
 		this.$body.find(".sd-focus-sel").on("change", (e) => { this.gf.focus_model = $(e.currentTarget).val(); this.load_segments(); });
@@ -786,11 +1052,13 @@ class SalesDashboard {
 		this.$body.find(".drv-models .sd-drv").on("click", (e) => { const m = $(e.currentTarget).data("key"); if (m) { this.gf.focus_model = m; this.load_segments(); } });
 		this.$body.find(".sd-toggle-rank").on("click", (e) => { const $r = this.$body.find(".sd-rank"); $r.toggle(); $(e.currentTarget).text($r.is(":visible") ? __("Hide rating") : __("Show full rating")); });
 		this.$body.find(".sd-print").on("click", () => window.print());
+		this.fix_broken_images();
+		this.animate();
 	}
 
 	// -------------------------------------------------------- COMPARE TAB
 	load_compare() {
-		this.$body.html(`<div class="sd-empty">${__("Loading")}...</div>`);
+		this.busy(true);
 		this.safe_call(`${SD_API}.get_compare_data`, { models: this.compare_models }, (m) => this.render_compare(m));
 	}
 
@@ -803,32 +1071,72 @@ class SalesDashboard {
 		this.load_compare();
 	}
 
+	// Model tanlash oynasi: segment filtri birinchi (bazaviy) model segmentiga
+	// o'rnatilgan holda ochiladi — to'g'ridan-to'g'ri analoglar. Filtrni boshqa
+	// segmentga yoki "Barcha segmentlar"ga o'zgartirib, istalgan model qo'shiladi.
 	pick_model() {
-		const base = this.compare_models.length ? this.compare_models[0] : null;
+		const base_segment = this.compare_models.length ? this._base_segment : null;
+		const ALL = "__all__";
+		let ready = false; // segmentlar kelguncha filtr o'zgarishi yuklamaydi
 		const dlg = new frappe.ui.Dialog({
 			title: __("Add model"),
 			fields: [
-				{ fieldname: "mode", fieldtype: "Select", label: __("Selection mode"), default: base ? "analog" : "all",
-				  options: [{ value: "analog", label: __("Direct analogs (same segment)") }, { value: "all", label: __("Full catalog") }] },
+				{ fieldname: "segment", fieldtype: "Select", label: __("Segment"), options: [{ value: ALL, label: __("All segments") }], default: ALL, change: () => ready && load() },
+				{ fieldname: "col", fieldtype: "Column Break" },
 				{ fieldname: "txt", fieldtype: "Data", label: __("Search brand or model") },
+				{ fieldname: "sec", fieldtype: "Section Break" },
+				{ fieldname: "hint", fieldtype: "HTML" },
 				{ fieldname: "list", fieldtype: "HTML" },
 			],
 		});
-		const $list = dlg.get_field("list").$wrapper;
+		const $list = dlg.get_field("list").$wrapper, $hint = dlg.get_field("hint").$wrapper;
+		const seg_value = () => { const v = dlg.get_value("segment"); return v && v !== ALL ? v : null; };
+
+		const draw_hint = () => {
+			const seg = seg_value();
+			$hint.html(`<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--text-muted);margin-bottom:8px">
+				${seg ? `<span>${__("Showing models of segment")} <b style="color:var(--text-color)">${esc(seg)}</b>${seg === base_segment ? ` · ${__("same as the base model")}` : ""}</span>` : `<span>${__("Showing all segments")}</span>`}
+				${seg ? `<span class="sd-btn sd-pick-all">${__("Show all segments")}</span>` : ""}
+				${base_segment && seg !== base_segment ? `<span class="sd-btn sd-pick-base">${__("Back to segment")} ${esc(base_segment)}</span>` : ""}
+			</div>`);
+			$hint.find(".sd-pick-all").on("click", () => dlg.set_value("segment", ALL));
+			$hint.find(".sd-pick-base").on("click", () => dlg.set_value("segment", base_segment));
+		};
+
+		let seq = 0;
 		const load = () => {
-			const mode = dlg.get_value("mode");
-			frappe.call({ method: `${SD_API}.search_models`, args: { txt: dlg.get_value("txt"), exclude: this.compare_models, segment: mode === "analog" && this._base_segment || null } }).then((r) => {
+			draw_hint();
+			const my = ++seq;
+			frappe.call({ method: `${SD_API}.search_models`, args: { txt: dlg.get_value("txt"), exclude: this.compare_models, segment: seg_value() } }).then((r) => {
+				if (my !== seq) return; // eskirgan javob
 				const rows = r.message || [];
-				$list.html(rows.length ? `<div style="max-height:360px;overflow:auto">${rows.map((m) => `<div class="sd-hbar" style="grid-template-columns:48px 1fr auto;cursor:pointer" data-name="${esc(m.name)}"><div style="height:34px;display:grid;place-items:center">${m.image ? `<img src="${esc(m.image)}" style="max-height:34px;max-width:48px;object-fit:contain" data-fb="🚗">` : "🚗"}</div><div><b>${esc(m.brand)}</b> ${esc(m.model_name)}<div style="font-size:12px;color:var(--text-muted)">${[m.vehicle_segment && m.vehicle_class ? m.vehicle_segment + "-" + m.vehicle_class : m.vehicle_segment, m.fuel_type].filter(Boolean).map(esc).join(" · ")}</div></div><span class="sd-btn">+</span></div>`).join("")}</div>` : `<div class="sd-empty">${__("Models not found")}</div>`);
-				$list.find("img[data-fb]").on("error", function () { $(this).replaceWith("🚗"); });
+				$list.html(rows.length ? `<div style="max-height:360px;overflow:auto">${rows.map((m) => {
+					const seg = m.vehicle_segment && m.vehicle_class ? m.vehicle_segment + "-" + m.vehicle_class : m.vehicle_segment;
+					return `<div class="sd-hbar" style="grid-template-columns:56px 1fr auto;cursor:pointer;padding:4px 0" data-name="${esc(m.name)}"><div style="height:36px;display:grid;place-items:center"><span style="width:56px;height:36px;display:grid;place-items:center" class="sd-mini">${model_img(m.image, m.vehicle_segment)}</span></div><div><b>${esc(m.brand)}</b> ${esc(m.model_name)}<div style="font-size:12px;color:var(--text-muted)">${[seg, m.fuel_type].filter(Boolean).map(esc).join(" · ")}${base_segment && seg && seg !== base_segment ? ` · <span style="color:var(--sd-down, #b3261e)">${__("other segment")}</span>` : ""}</div></div><span class="sd-btn">+</span></div>`;
+				}).join("")}</div>` : `<div class="sd-empty">${__("Models not found")}${seg_value() ? ` · <a href="#" class="sd-pick-all-link">${__("Show all segments")}</a>` : ""}</div>`);
+				this.fix_broken_images($list);
+				$list.find(".sd-pick-all-link").on("click", (e) => { e.preventDefault(); dlg.set_value("segment", ALL); });
 				$list.find("[data-name]").on("click", (e) => { dlg.hide(); this.set_compare(this.compare_models.concat([$(e.currentTarget).data("name")])); });
 			});
 		};
+
+		// Segmentlar ro'yxati — "PC-B · 8 ta model"; bazaviy segment tepada va tanlangan
+		frappe.call({ method: `${SD_API}.get_model_segments` }).then((r) => {
+			const segs = r.message || [];
+			const opts = [{ value: ALL, label: __("All segments") }].concat(
+				segs.map((s) => ({ value: s.segment, label: `${s.segment} · ${s.count} ${__("models")}${s.segment === base_segment ? " ★" : ""}` }))
+			);
+			const f = dlg.get_field("segment");
+			f.df.options = opts;
+			f.refresh();
+			ready = true;
+			dlg.set_value("segment", base_segment && segs.some((s) => s.segment === base_segment) ? base_segment : ALL).then(load);
+		});
+
 		let timer = null;
 		dlg.fields_dict.txt.$input.on("input", () => { clearTimeout(timer); timer = setTimeout(load, 250); });
-		dlg.fields_dict.mode.$input.on("change", load);
 		dlg.show();
-		load();
+		$list.html(`<div class="sd-empty">${__("Loading")}...</div>`);
 	}
 
 	render_compare(d) {
@@ -838,7 +1146,7 @@ class SalesDashboard {
 			<div class="sd-cmp-card ${i === 0 ? "base" : ""}">
 				<span class="rm" data-rm="${esc(m.model)}" title="${__("Remove")}">✕</span>
 				${i === 0 ? `<span class="base-badge">✓ ${__("Base model")}</span>` : ""}
-				<div class="img">${m.image ? `<img src="${esc(m.image)}" data-fb="🚗">` : "🚗"}</div>
+				<div class="img">${model_img(m.image, m.vtype)}</div>
 				<div class="brand">${esc(m.brand)}</div><div class="name">${esc(m.label)}</div>
 				<div class="meta">${esc(m.vtype || "—")}${m.vclass ? " · " + esc(m.segment) : ""}<br>${esc(m.fuel || __("Powertrain not set"))}<br>${esc(m.tier || "—")}${m.tier && m.tier_inherited ? " · " + __("Inherited from brand") : ""}</div>
 				<div class="meta" style="margin-top:8px">${__("Segment rank")}: <b>${m.segment_rank ? "#" + m.segment_rank : "—"}</b> ${m.segment_size ? __("of") + " " + m.segment_size : ""}</div>
@@ -873,6 +1181,7 @@ class SalesDashboard {
 		}).join("");
 
 		this.$body.html(`
+			${this.data_note(d.data_note)}
 			<div class="sd-sub" style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap"><span>${__("Compare two to four models by common indicators; the first model sets the segment for direct analogs.")}</span>
 				<span><span class="sd-btn sd-cmp-copy">${__("Copy link")}</span> <span class="sd-btn sd-cmp-print">${__("Print / PDF")}</span> ${models.length ? `<span class="sd-btn sd-cmp-clear">${__("Clear")}</span>` : ""}</span></div>
 			<div class="sd-h" style="margin-top:0">${__("Selected models")} <span class="sd-badge">${models.length} ${__("of")} 4</span></div>
@@ -908,5 +1217,6 @@ class SalesDashboard {
 		this.$body.find(".sd-cmp-diff").on("change", (e) => { this.cmp_only_diff = e.currentTarget.checked; this.render_compare(d); });
 		this.$body.find(".sd-cmp-print").on("click", () => window.print());
 		this.$body.find(".sd-cmp-copy").on("click", () => frappe.utils.copy_to_clipboard(window.location.href));
+		this.animate();
 	}
 }

@@ -9,7 +9,7 @@ from collections import defaultdict
 import frappe
 from frappe.utils import cint, flt, getdate, nowdate
 
-TIER_ORDER = ["luxury", "premium", "mass_market", "budget", "unset"]
+TIER_ORDER = ["luxury", "premium", "mass_market", "budget", "commercial", "unset"]
 
 
 def _ym_shift(ym, n):
@@ -55,6 +55,24 @@ def _load_rows():
 		r.brand_label = r.brand_name or r.brand
 		r.model_label = r.model_name or r.model
 	return rows
+
+
+def _thin_last_month(rows):
+	"""Ma'lumotning oxirgi oyi shubhali darajada kichikmi (masalan, sinov
+	yozuvlari yoki hali kiritilmagan oy)? Oldingi 6 oy medianasining 10%
+	idan kam bo'lsa — dashboard ogohlantirish chiqaradi, raqamlarni o'zgartirmaydi."""
+	by_ym, n_by_ym = defaultdict(int), defaultdict(int)
+	for r in rows:
+		by_ym[r.ym] += r.qty
+		n_by_ym[r.ym] += 1
+	yms = sorted(by_ym)
+	if len(yms) < 4:
+		return None
+	last, prev = yms[-1], sorted(by_ym[m] for m in yms[-7:-1])
+	median = prev[len(prev) // 2]
+	if median and by_ym[last] < median * 0.1:
+		return {"ym": last, "qty": by_ym[last], "entries": n_by_ym[last], "typical": median, "prev_ym": yms[-2]}
+	return None
 
 
 def _sum_by(rows, key):
@@ -150,18 +168,20 @@ def get_sales_data(filters=None):
 	last12 = _months_between(_ym_shift(to_ym, -11), to_ym)
 	per_by_ym = _sum_by(per, "ym")
 
-	by_model = defaultdict(lambda: {"qty": 0, "label": "", "brand": ""})
+	by_model = defaultdict(lambda: {"qty": 0, "label": "", "brand": "", "image": "", "logo": ""})
 	for r in per:
 		bm = by_model[r.model]
 		bm["qty"] += r.qty
 		bm["label"] = r.model_label
 		bm["brand"] = r.brand_label
+		bm["image"], bm["logo"] = r.image or "", r.logo or ""
 	top_models = sorted(({"model": k, **v} for k, v in by_model.items()), key=lambda x: -x["qty"])[:15]
 
-	by_brand = defaultdict(lambda: {"qty": 0, "label": ""})
+	by_brand = defaultdict(lambda: {"qty": 0, "label": "", "logo": ""})
 	for r in per:
 		by_brand[r.brand]["qty"] += r.qty
 		by_brand[r.brand]["label"] = r.brand_label
+		by_brand[r.brand]["logo"] = r.logo or ""
 	top_brands = sorted(({"brand": k, **v} for k, v in by_brand.items()), key=lambda x: -x["qty"])[:10]
 
 	type_share = sorted(({"vtype": k or "—", "qty": v} for k, v in _sum_by(per, "vtype").items()), key=lambda x: -x["qty"])
@@ -207,12 +227,16 @@ def get_sales_data(filters=None):
 	# Reyting: oxirgi oy L, oldingi oy P, o'tgan yil Y
 	L = months_with_data[-1] if months_with_data else to_ym
 	P, Yp = _ym_shift(L, -1), _ym_shift(L, -12)
-	agg = defaultdict(lambda: {"L": 0, "P": 0, "Y": 0, "label": ""})
+	agg = defaultdict(lambda: {"L": 0, "P": 0, "Y": 0, "label": "", "logo": ""})
 	for r in dim:
 		if r.ym in (L, P, Yp):
 			a = agg[r.brand]
-			a["label"] = r.brand_label
+			a["label"], a["logo"] = r.brand_label, r.logo or ""
 			a["L" if r.ym == L else "P" if r.ym == P else "Y"] += r.qty
+	first_ym = {}
+	for r in dim:
+		if r.qty > 0 and (r.brand not in first_ym or r.ym < first_ym[r.brand]):
+			first_ym[r.brand] = r.ym
 	total_L = sum(a["L"] for a in agg.values())
 	rating = [{"brand": b, **a} for b, a in agg.items() if a["L"] or a["P"] or a["Y"]]
 	rating.sort(key=lambda x: -x["L"])
@@ -221,6 +245,7 @@ def get_sales_data(filters=None):
 		x["rank"] = i + 1
 		x["mom"] = _pct(x["L"], x["P"])
 		x["yoy"] = _pct(x["L"], x["Y"])
+		x["is_new"] = first_ym.get(x["brand"], L) > Yp
 		x["share"] = round(x["L"] / total_L * 100, 2) if total_L else 0
 		x["move"] = prev_rank.get(x["brand"], i + 1) - (i + 1)
 
@@ -238,7 +263,8 @@ def get_sales_data(filters=None):
 		},
 		"tiers": tier_list,
 		"yearly": [{"year": y, "qty": yearly[y]} for y in sorted(yearly)],
-		"monthly": [{"ym": m, "qty": per_by_ym.get(m, 0)} for m in last12],
+		"monthly": [{"ym": m, "qty": per_by_ym[m] if m in per_by_ym and from_ym <= m <= to_ym else None} for m in last12],
+		"data_note": _thin_last_month(rows),
 		"top_models": top_models,
 		"top_brands": top_brands,
 		"type_share": type_share,
@@ -258,7 +284,12 @@ def get_segment_data(filters=None):
 		return {"empty": True}
 
 	years = sorted({r.ym[:4] for r in rows})
-	year = str(f.get("year") or years[-1])
+	year = f.get("year")
+	if not year and f.get("focus_model"):
+		# Model kartasidan kelinganda — modelning oxirgi sotuv yili
+		focus_years = sorted({r.ym[:4] for r in rows if r.model == f["focus_model"]})
+		year = focus_years[-1] if focus_years else None
+	year = str(year or years[-1])
 	year_data_months = sorted({r.ym for r in rows if r.ym.startswith(year)})
 	if not year_data_months:
 		return {"empty": True, "years": years}
@@ -268,7 +299,10 @@ def get_segment_data(filters=None):
 		a, b = ranges[mode]
 		period = [f"{year}-{m:02d}" for m in range(a, b + 1)]
 	else:
-		mode, period = "ytd", year_data_months
+		mode, period = "ytd", _months_between(f"{year}-01", year_data_months[-1])
+	# Ma'lumot hali yo'q oylar (kelajak) bilan solishtirish noto'g'ri foiz beradi
+	data_end = max(r.ym for r in rows)
+	period = [m for m in period if m <= data_end] or period[:1]
 	n = len(period)
 	prev_period = [_ym_shift(period[0], -n + i) for i in range(n)]
 	yoy_period = [_ym_shift(m, -12) for m in period]
@@ -282,7 +316,10 @@ def get_segment_data(filters=None):
 		segments = sorted(({"segment": k, "qty": 0} for k in year_segments), key=lambda x: x["segment"])
 	if not segments:
 		return {"empty": True, "years": years}
-	segment = f.get("segment") if f.get("segment") in {x["segment"] for x in segments} else segments[0]["segment"]
+	all_segments = {r.segment for r in rows}
+	if f.get("segment") in all_segments and f["segment"] not in {x["segment"] for x in segments}:
+		segments.append({"segment": f["segment"], "qty": 0})
+	segment = f.get("segment") if f.get("segment") in all_segments else segments[0]["segment"]
 
 	seg_rows = [r for r in rows if r.segment == segment]
 	S = [r for r in seg_rows if r.ym in period]
@@ -343,10 +380,11 @@ def get_segment_data(filters=None):
 
 	monthly_totals = [{"ym": m, "qty": seg_by_ym.get(m, 0) if m in data_months else None} for m in months12]
 
-	by_brand = defaultdict(lambda: {"qty": 0, "label": ""})
+	by_brand = defaultdict(lambda: {"qty": 0, "label": "", "logo": ""})
 	for r in S:
 		by_brand[r.brand]["qty"] += r.qty
 		by_brand[r.brand]["label"] = r.brand_label
+		by_brand[r.brand]["logo"] = r.logo or ""
 	brand_share = sorted(({"brand": k, **v} for k, v in by_brand.items()), key=lambda x: -x["qty"])
 	top5 = [b["brand"] for b in brand_share[:5]]
 	bs = {b: defaultdict(int) for b in top5}
@@ -380,6 +418,7 @@ def get_segment_data(filters=None):
 		"monthly_totals": monthly_totals,
 		"brand_share": brand_share, "brand_dynamics": brand_dynamics,
 		"drivers": {"rows": drivers, "from": prev_m, "to": last},
+		"data_note": _thin_last_month(rows),
 	}
 
 
@@ -455,24 +494,46 @@ def get_compare_data(models=None):
 		series.append({"model": name, "label": f"{brand.get('brand_name') or doc.brand} {doc.model_name or name}", "values": [m_by_ym.get(m, 0) for m in last12]})
 		yearly.append({"model": name, "values": [sum(q for ym, q in m_by_ym.items() if ym.startswith(y)) for y in years]})
 
-	return {"models": out, "months": last12, "series": series, "years": years, "yearly": yearly, "last": last}
+	return {"models": out, "months": last12, "series": series, "years": years, "yearly": yearly, "last": last, "data_note": _thin_last_month(rows)}
+
+
+@frappe.whitelist()
+def get_model_segments():
+	"""Solishtirish oynasidagi segment filtri uchun: faol modellar bor
+	segmentlar va har birida nechta model borligi."""
+	rows = frappe.db.sql(
+		"""select vehicle_segment as vtype, vehicle_class as vclass, count(*) as n
+		   from `tabModel` where is_active = 1 and ifnull(vehicle_segment, '') != ''
+		   group by vehicle_segment, vehicle_class order by vehicle_segment, vehicle_class""",
+		as_dict=True,
+	)
+	return [{"segment": f"{r.vtype}-{r.vclass}" if r.vclass else r.vtype, "vtype": r.vtype, "vclass": r.vclass or "", "count": r.n} for r in rows]
 
 
 @frappe.whitelist()
 def search_models(txt=None, exclude=None, segment=None):
 	"""Solishtirish uchun model qidiruvi: brend/model nomi bo'yicha, ixtiyoriy
-	segment cheklovi ('Прямые аналоги' rejimi)."""
+	segment cheklovi. Segment '{tur}-{klass}' yoki klassi yo'q bo'lsa faqat '{tur}'."""
 	if isinstance(exclude, str):
 		exclude = frappe.parse_json(exclude)
 	filters = {"is_active": 1}
-	if segment and "-" in segment:
-		vtype, vclass = segment.split("-", 1)
-		filters.update({"vehicle_segment": vtype, "vehicle_class": vclass})
+	if segment:
+		# Tur nomida ham '-' bo'lishi mumkin — shuning uchun ma'lum turlar bilan solishtiramiz
+		vtypes = sorted(frappe.get_all("Vehicle Segment", pluck="name"), key=len, reverse=True)
+		vtype = next((v for v in vtypes if segment == v or segment.startswith(v + "-")), None)
+		if vtype:
+			filters["vehicle_segment"] = vtype
+			vclass = segment[len(vtype) + 1 :]
+			if vclass:
+				filters["vehicle_class"] = vclass
+		else:
+			vtype, _, vclass = segment.partition("-")
+			filters.update({"vehicle_segment": vtype, "vehicle_class": vclass})
 	rows = frappe.get_all(
 		"Model", filters=filters,
 		or_filters=[["model_name", "like", f"%{txt}%"], ["brand", "like", f"%{txt}%"], ["name", "like", f"%{txt}%"]] if txt else None,
 		fields=["name", "model_name", "brand", "vehicle_segment", "vehicle_class", "fuel_type", "image"],
-		order_by="brand asc, model_name asc", limit_page_length=30,
+		order_by="brand asc, model_name asc", limit_page_length=60,
 	)
 	exclude = set(exclude or [])
 	return [r for r in rows if r.name not in exclude]
@@ -493,7 +554,7 @@ def _vat_adjust(amount, includes_vat, vat_percent, want_vat):
 @frappe.whitelist()
 def get_price_ranges(models=None, currency=None, with_vat=1, as_on=None, limit=8):
 	"""Model narx diapazoni: har modelning faol komplektatsiyalari bo'yicha
-	eng arzon—eng qimmat, o'rtacha va eng yaxshi aksiya narxi.
+	eng arzon—eng qimmat va o'rtacha narx.
 
 	Har komplektatsiya uchun berilgan sanaga amal qiladigan oxirgi narx
 	olinadi (valid_from <= as_on). Valyutalar aralashtirilmaydi — tanlangan
@@ -537,8 +598,7 @@ def get_price_ranges(models=None, currency=None, with_vat=1, as_on=None, limit=8
 
 	price_rows = frappe.db.sql(
 		"""
-		select tp.trim, tp.model, tp.amount, tp.includes_vat, tp.vat_percent,
-		       tp.promo_amount, tp.promo_until, tp.valid_from
+		select tp.trim, tp.model, tp.amount, tp.includes_vat, tp.vat_percent, tp.valid_from
 		from `tabTrim Price` tp
 		inner join `tabTrim` t on t.name = tp.trim and t.is_active = 1
 		where tp.is_active = 1 and tp.currency = %(cur)s and tp.valid_from <= %(as_on)s
@@ -561,10 +621,7 @@ def get_price_ranges(models=None, currency=None, with_vat=1, as_on=None, limit=8
 	by_model = defaultdict(list)
 	for trim, r in latest.items():
 		price = _vat_adjust(r.amount, r.includes_vat, r.vat_percent, want_vat)
-		promo = None
-		if flt(r.promo_amount) and (not r.promo_until or getdate(r.promo_until) >= as_on):
-			promo = _vat_adjust(r.promo_amount, r.includes_vat, r.vat_percent, want_vat)
-		by_model[r.model].append({"trim": trim, "price": price, "promo": promo, "valid_from": str(r.valid_from)})
+		by_model[r.model].append({"trim": trim, "price": price, "valid_from": str(r.valid_from)})
 
 	rows = []
 	for m in models:
@@ -575,12 +632,10 @@ def get_price_ranges(models=None, currency=None, with_vat=1, as_on=None, limit=8
 			"trims_total": trim_counts.get(m, 0), "trims_priced": len(items), "items": items,
 		}
 		if items:
-			promos = [x["promo"] for x in items if x["promo"]]
 			row.update({
 				"min": round(items[0]["price"]),
 				"max": round(items[-1]["price"]),
 				"avg": round(sum(x["price"] for x in items) / len(items)),
-				"promo": round(min(promos)) if promos else None,
 				"min_trim": items[0]["trim"], "max_trim": items[-1]["trim"],
 				"last_date": max(x["valid_from"] for x in items),
 			})
